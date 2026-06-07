@@ -3,780 +3,376 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tawajud Sales Coach</title>
+    <title>CRM تواجد - نسخة مبسطة</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; direction: rtl; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f7fa; color: #1e293b; }
-        .app { max-width: 680px; width: 100%; margin: 0 auto; padding: 12px; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f1f5f9; color: #1e293b; padding: 16px; }
+        .app { max-width: 700px; margin: 0 auto; }
 
-        /* Cards & layout */
-        .card { background: #ffffff; border-radius: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); padding: 16px; margin-bottom: 12px; border: 0.5px solid #e9edf2; }
-        .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-        .header-title { font-weight: 600; font-size: 16px; }
-        .header-sub { font-size: 12px; color: #64748b; }
-        .call-badge { background: #dcfce7; color: #166534; padding: 3px 12px; border-radius: 20px; font-size: 12px; font-weight: 500; }
+        .card { background: #ffffff; border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); padding: 16px; margin-bottom: 12px; border: 1px solid #e9edf2; }
+        h2 { font-size: 18px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
 
-        /* Stages bar */
-        .stages-bar { display: flex; gap: 4px; margin-bottom: 16px; }
-        .stage-dot { flex: 1; height: 4px; border-radius: 2px; background: #e2e8f0; transition: background 0.2s; cursor: pointer; }
-        .stage-dot.done { background: #16a34a; }
-        .stage-dot.active { background: #2563eb; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .full { grid-column: 1 / -1; }
+        label { font-size: 13px; font-weight: 500; color: #475569; display: block; margin-bottom: 3px; }
+        input, select, textarea { width: 100%; padding: 7px 10px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; background: #fff; font-family: inherit; }
+        textarea { min-height: 60px; resize: vertical; }
 
-        /* Stage header */
-        .stage-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
-        .stage-num { width: 32px; height: 32px; border-radius: 50%; background: #2563eb; color: #fff; font-size: 13px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        .stage-name { font-size: 16px; font-weight: 600; }
-        .stage-hint { font-size: 12px; color: #64748b; margin-top: 2px; }
+        .btn { padding: 8px 16px; border: none; border-radius: 8px; font-weight: 500; cursor: pointer; font-size: 14px; transition: 0.15s; }
+        .btn-primary { background: #2563eb; color: #fff; }
+        .btn-primary:hover { background: #1d4ed8; }
+        .btn-success { background: #16a34a; color: #fff; }
+        .btn-success:hover { background: #15803d; }
+        .btn-danger { background: #dc2626; color: #fff; }
+        .btn-danger:hover { background: #b91c1c; }
+        .btn-outline { background: transparent; border: 1px solid #e2e8f0; color: #475569; }
+        .btn-outline:hover { background: #f8fafc; }
 
-        /* Script boxes */
-        .script-box { background: #f1f5f9; border-radius: 10px; border-right: 3px solid #2563eb; padding: 12px 14px; margin-bottom: 12px; font-size: 13px; line-height: 1.7; }
-        .script-label { font-size: 11px; color: #94a3b8; margin-bottom: 6px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; }
+        .row-actions { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
 
-        /* Buttons */
-        .btns-grid { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
-        .choice-btn { border: 1px solid #e2e8f0; border-radius: 8px; padding: 7px 14px; font-size: 13px; background: #fff; color: #1e293b; cursor: pointer; transition: all 0.15s; font-family: inherit; }
-        .choice-btn:hover { background: #f8fafc; }
-        .choice-btn.selected { background: #2563eb; color: #fff; border-color: #2563eb; }
-        .choice-btn.pain-selected { background: #dc2626; color: #fff; border-color: #dc2626; }
-        .choice-btn.impact-selected { background: #ea580c; color: #fff; border-color: #ea580c; }
+        /* Client list */
+        .client-item { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px 14px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; font-size: 14px; }
+        .client-item .info span { font-weight: 500; }
+        .client-item .info small { color: #64748b; font-size: 12px; display: block; }
+        .client-actions button { background: none; border: none; cursor: pointer; color: #64748b; padding: 2px 6px; }
+        .client-actions button:hover { color: #2563eb; }
 
-        .btn-next { flex: 1; padding: 10px; border-radius: 8px; border: none; background: #2563eb; color: #fff; font-size: 14px; font-weight: 500; cursor: pointer; font-family: inherit; transition: opacity 0.2s; }
-        .btn-next:hover { opacity: 0.9; }
-        .btn-back { padding: 10px 14px; border-radius: 8px; border: 1px solid #e2e8f0; background: #fff; color: #64748b; font-size: 13px; cursor: pointer; font-family: inherit; }
-        .btn-back:hover { background: #f8fafc; }
+        .search-box { display: flex; gap: 8px; margin-bottom: 12px; }
+        .search-box input { flex: 1; }
 
-        /* Help button */
-        .help-btn { background: #f1f5f9; border: 1px dashed #94a3b8; border-radius: 8px; padding: 6px 12px; font-size: 12px; color: #2563eb; cursor: pointer; font-family: inherit; display: inline-flex; align-items: center; gap: 4px; }
-        .help-btn:hover { background: #e2e8f0; }
+        .stats { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+        .stat-item { background: #f8fafc; border-radius: 10px; padding: 8px 16px; text-align: center; flex: 1; min-width: 80px; border: 1px solid #e2e8f0; }
+        .stat-item .num { font-size: 20px; font-weight: 700; color: #2563eb; }
+        .stat-item .label { font-size: 12px; color: #64748b; }
 
-        /* Helper box */
-        .helper-box { background: #f1f5f9; border-radius: 10px; border: 1px dashed #cbd5e1; padding: 10px 14px; margin-bottom: 10px; font-size: 12px; color: #475569; display: flex; gap: 8px; align-items: flex-start; }
-        .helper-icon { color: #2563eb; flex-shrink: 0; margin-top: 2px; }
+        #view-list, #view-form { display: none; }
+        #view-list.active, #view-form.active { display: block; }
+        .tab-bar { display: flex; gap: 4px; margin-bottom: 16px; background: #fff; border-radius: 12px; padding: 4px; border: 1px solid #e9edf2; }
+        .tab-btn { flex: 1; padding: 8px; border: none; border-radius: 8px; background: transparent; cursor: pointer; font-weight: 500; color: #64748b; }
+        .tab-btn.active { background: #2563eb; color: #fff; }
 
-        /* Questions list */
-        .questions-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
-        .q-item { display: flex; align-items: flex-start; gap: 8px; padding: 8px 12px; border-radius: 8px; border: 1px solid #e2e8f0; font-size: 13px; cursor: pointer; background: #fff; transition: all 0.15s; }
-        .q-item:hover { background: #f8fafc; }
-        .q-item.asked { background: #dcfce7; border-color: #16a34a; }
-        .q-check { width: 18px; height: 18px; border-radius: 50%; border: 1px solid #e2e8f0; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 11px; }
-        .q-item.asked .q-check { background: #16a34a; border-color: #16a34a; color: #fff; }
-
-        /* Pain level */
-        .pain-level { display: flex; gap: 6px; flex-wrap: wrap; }
-        .pain-btn { border: 1px solid #e2e8f0; border-radius: 8px; padding: 6px 14px; font-size: 12px; background: #fff; color: #64748b; cursor: pointer; font-family: inherit; transition: all 0.15s; }
-        .pain-btn.sel { background: #fef9c3; border-color: #ca8a04; color: #854d0e; font-weight: 500; }
-
-        /* Outcome grid */
-        .outcome-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 12px; }
-        .outcome-btn { border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px 12px; font-size: 13px; background: #fff; color: #1e293b; cursor: pointer; font-family: inherit; text-align: center; transition: all 0.15s; }
-        .outcome-btn:hover { background: #f8fafc; }
-        .outcome-btn.sel-demo { background: #dbeafe; border-color: #2563eb; color: #1e40af; }
-        .outcome-btn.sel-price { background: #fef9c3; border-color: #ca8a04; color: #854d0e; }
-        .outcome-btn.sel-whatsapp { background: #dcfce7; border-color: #16a34a; color: #166534; }
-        .outcome-btn.sel-follow { background: #f1f5f9; border-color: #64748b; }
-        .outcome-btn.sel-unfit { background: #fee2e2; border-color: #dc2626; color: #991b1b; }
-        .outcome-btn.sel-notinterested { background: #f1f5f9; border-color: #94a3b8; }
-
-        /* Note input */
-        .note-input { width: 100%; border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px 12px; font-size: 13px; font-family: inherit; background: #fff; color: #1e293b; resize: none; min-height: 60px; }
-
-        /* Mini tags */
-        .client-summary-mini { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
-        .mini-tag { font-size: 11px; padding: 3px 10px; border-radius: 20px; background: #f1f5f9; border: 1px solid #e2e8f0; color: #475569; }
-        .mini-tag span { color: #1e293b; font-weight: 500; }
-
-        /* Start screen */
-        .start-screen { text-align: center; padding: 12px 0; }
-        .start-title { font-size: 20px; font-weight: 700; color: #1e293b; margin-bottom: 4px; }
-        .start-sub { font-size: 14px; color: #64748b; margin-bottom: 20px; }
-        .input-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; text-align: right; }
-        .input-row label { font-size: 13px; color: #475569; font-weight: 500; }
-        .input-row input { border: 1px solid #e2e8f0; border-radius: 8px; padding: 9px 12px; font-size: 14px; font-family: inherit; background: #fff; color: #1e293b; }
-        .btn-start { width: 100%; padding: 12px; background: #2563eb; color: #fff; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; }
-
-        /* Finish */
-        .finish-card { background: #f8fafc; border-radius: 12px; padding: 16px; text-align: center; }
-        .finish-icon { font-size: 28px; color: #16a34a; margin-bottom: 8px; }
-        .finish-title { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
-        .finish-sub { font-size: 12px; color: #64748b; }
-
-        /* Voice recorder */
-        .voice-recorder { display: flex; gap: 8px; align-items: center; margin-top: 8px; }
-        .rec-btn { border: none; background: #e2e8f0; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #1e293b; transition: all 0.2s; }
-        .rec-btn.recording { background: #ef4444; color: #fff; animation: pulse 1s infinite; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
-
-        /* Responsive */
-        @media (max-width: 480px) { .app { padding: 8px; } .outcome-grid { grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 480px) { .form-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 <div class="app" id="app">
-
-    <!-- Start Screen -->
-    <div id="start-view">
-        <div class="card">
-            <div class="start-screen">
-                <div style="font-size:36px; color:#2563eb; margin-bottom:8px"><i class="ti ti-phone-call"></i></div>
-                <div class="start-title">Tawajud Sales Coach</div>
-                <div class="start-sub">مساعدك أثناء المكالمة — خطوة بخطوة وفق منهجية تواجد</div>
-            </div>
-            <div class="input-row"><label>اسم العميل</label><input id="inp-name" type="text" placeholder="مثلاً: أبو محمد"></div>
-            <div class="input-row"><label>رقم الهاتف</label><input id="inp-phone" type="text" placeholder="07xxxxxxxx"></div>
-            <div class="section-label">مصدر العميل</div>
-            <div class="btns-grid" id="source-btns">
-                <button class="choice-btn" data-source="واتساب">واتساب</button>
-                <button class="choice-btn" data-source="فيسبوك">فيسبوك</button>
-                <button class="choice-btn" data-source="إنستغرام">إنستغرام</button>
-                <button class="choice-btn" data-source="تحويل">تحويل</button>
-                <button class="choice-btn" data-source="بارد">بارد</button>
-            </div>
-            <button class="btn-start" onclick="startCall()"><i class="ti ti-player-play"></i> ابدأ المكالمة</button>
+    <div class="card">
+        <h2><i class="ti ti-users" style="color:#2563eb"></i> تواجد CRM</h2>
+        <div class="stats" id="stats"></div>
+        <div class="tab-bar">
+            <button class="tab-btn active" onclick="switchTab('list')">📋 قائمة العملاء</button>
+            <button class="tab-btn" onclick="switchTab('form')">➕ عميل جديد</button>
         </div>
     </div>
 
-    <!-- Call View -->
-    <div id="call-view" style="display:none">
-        <div class="card" style="padding:12px 16px;">
-            <div class="header">
-                <div>
-                    <div class="header-title" id="hdr-name">العميل</div>
-                    <div class="header-sub" id="hdr-phone"></div>
+    <div id="view-list" class="active">
+        <div class="card">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="ابحث بالاسم أو الهاتف..." oninput="renderList()">
+                <button class="btn btn-primary" onclick="exportCSV()"><i class="ti ti-download"></i> تصدير</button>
+            </div>
+            <div id="clientList"></div>
+        </div>
+    </div>
+
+    <div id="view-form">
+        <div class="card">
+            <h2 id="formTitle">➕ عميل جديد</h2>
+            <div class="form-grid">
+                <div><label>اسم العميل</label><input id="f_name" placeholder="مثال: أبو محمد"></div>
+                <div><label>رقم الهاتف</label><input id="f_phone" placeholder="07xxxxxxxx"></div>
+                <div><label>مندوب المبيعات</label><input id="f_sales" placeholder="اسمك"></div>
+                <div><label>المنصب</label><input id="f_position" placeholder="مدير / مالك"></div>
+                <div><label>اسم النشاط التجاري</label><input id="f_bizname" placeholder="مثال: مطعم البركة"></div>
+                <div><label>صاحب القرار</label><input id="f_owner" placeholder="اسم صاحب القرار"></div>
+                <div><label>نوع النشاط</label>
+                    <select id="f_industry">
+                        <option value="">اختر...</option>
+                        <option>مطعم</option><option>شركة</option><option>عيادة</option><option>مدرسة</option>
+                        <option>مصنع</option><option>متجر</option><option>فندق</option><option>صيدلية</option>
+                        <option>غير ذلك</option>
+                    </select>
                 </div>
-                <div class="call-badge" id="call-timer">00:00</div>
+                <div><label>عدد الموظفين الفعلي</label><input type="number" id="f_emp" placeholder="مثال: 7"></div>
+                <div><label>عدد الفروع</label><input type="number" id="f_branches" placeholder="مثال: 3"></div>
+                <div><label>المدينة</label><input id="f_city" placeholder="بغداد"></div>
+                <div><label>النظام الحالي</label>
+                    <select id="f_currentsys">
+                        <option value="">اختر...</option>
+                        <option>Excel</option><option>بصمة</option><option>ورقي</option>
+                        <option>نظام قديم</option><option>لا يوجد نظام</option>
+                    </select>
+                </div>
+                <div><label>المشكلة الرئيسية</label>
+                    <select id="f_pain">
+                        <option value="">اختر...</option>
+                        <option>أخطاء بالرواتب</option><option>صعوبة متابعة الحضور</option>
+                        <option>مشاكل الفروع</option><option>ضياع وقت بالتقارير</option>
+                        <option>تحايل على الدوام</option><option>تأخر الرواتب</option>
+                        <option>ما عندهم رؤية واضحة</option>
+                    </select>
+                </div>
+                <div><label>مستوى الحاجة</label>
+                    <select id="f_need">
+                        <option value="">اختر...</option>
+                        <option>عالي</option><option>متوسط</option><option>منخفض</option>
+                    </select>
+                </div>
+                <div><label>هل تم الاتصال من قبل؟</label>
+                    <select id="f_contacted">
+                        <option value="لا">لا</option><option value="نعم">نعم</option>
+                    </select>
+                </div>
+                <div><label>حالة التطبيق</label>
+                    <select id="f_appstatus">
+                        <option value="">اختر...</option>
+                        <option>غير مثبت</option><option>مثبت</option><option>في التجربة</option>
+                    </select>
+                </div>
+                <div><label>مصدر العميل</label>
+                    <select id="f_source">
+                        <option value="">اختر...</option>
+                        <option>واتساب</option><option>فيسبوك</option><option>إنستغرام</option>
+                        <option>تحويل</option><option>بارد</option>
+                    </select>
+                </div>
+                <div><label>آخر تاريخ اتصال</label><input type="date" id="f_lastcontact"></div>
+                <div><label>موعد المتابعة القادم</label><input type="date" id="f_nextfollow"></div>
+                <div><label>نسبة احتمالية الصفقة (%)</label><input type="number" id="f_probability" min="0" max="100" placeholder="مثال: 70"></div>
+                <div class="full"><label>المبلغ التقديري (دينار عراقي)</label><input type="number" id="f_amount" placeholder="مثال: 250000"></div>
+                <div class="full"><label>ملاحظات</label><textarea id="f_notes" placeholder="أي تفاصيل مهمة..."></textarea></div>
+            </div>
+            <div class="row-actions">
+                <button class="btn btn-success" id="saveBtn" onclick="saveClient()"><i class="ti ti-check"></i> حفظ العميل</button>
+                <button class="btn btn-outline" onclick="resetForm()"><i class="ti ti-refresh"></i> مسح الحقول</button>
+                <button class="btn btn-danger" id="deleteBtn" style="display:none" onclick="deleteClient()"><i class="ti ti-trash"></i> حذف</button>
             </div>
         </div>
-
-        <div class="stages-bar" id="stages-bar"></div>
-        <div class="client-summary-mini" id="client-mini"></div>
-
-        <div id="stage-content"></div>
     </div>
 </div>
 
 <script>
-// ============================================================
-//  الملف: Tawajud Sales Coach – النسخة المحسنة
-//  يستخدم منهجية التدريب الكاملة مع أزرار + صوت + حفظ محلي
-// ============================================================
+    // --- البيانات الأساسية ---
+    let clients = [];
+    let editingId = null;
 
-// --- تعريف المراحل حسب التدريب ---
-const STAGES = [
-    { name: 'الافتتاح', hint: 'هدفك: تعرف منو الشخص وتكمل' },
-    { name: 'معلومات العميل', hint: 'اجمع بيانات سريعة بالأزرار' },
-    { name: 'اكتشاف الألم', hint: 'اطلع المشكلة الحقيقية' },
-    { name: 'تأثير المشكلة', hint: 'كبّر الألم — هاي أهم مرحلة' },
-    { name: 'التلخيص', hint: 'اقرأه للعميل واحصل على موافقته' },
-    { name: 'عرض الحل', hint: 'اربط تواجد بمشكلته تحديداً' },
-    { name: 'الخطوة التالية', hint: 'حدد نتيجة المكالمة' }
-];
-
-// --- مصادر الأسئلة حسب الألم (من التدريب ص31-32) ---
-const PAIN_QUESTIONS = {
-    'أخطاء بالرواتب': [
-        'شكد ياخذ وقت تجهيز الرواتب نهاية الشهر؟',
-        'تصير اعتراضات من الموظفين على الرواتب؟',
-        'منو مسؤول عن تدقيقها؟'
-    ],
-    'صعوبة متابعة الحضور': [
-        'شلون يسجلون الحضور الحين؟',
-        'تصير حالات غياب بدون إشعار؟',
-        'كيف يتابع المدير الحضور؟'
-    ],
-    'مشاكل الفروع': [
-        'كيف تتواصل مع الفروع يومياً؟',
-        'منو يتابع حضور كل فرع؟',
-        'التقارير تجمعوها يدوياً؟'
-    ],
-    'ضياع وقت بالتقارير': [
-        'شكد تحتاج وقت إذا طلبت تقرير الحين؟',
-        'منو يحضر التقارير؟',
-        'التقارير عند الإدارة كافية؟'
-    ],
-    'تحايل على الدوام': [
-        'شلون تكشفون التحايل؟',
-        'صار موقف بسببها؟'
-    ],
-    'تأخر الرواتب': [
-        'شكد يتأخر الصرف عادةً؟',
-        'الموظفين يشتكون من التأخير؟'
-    ],
-    'ما عندهم رؤية واضحة': [
-        'شلون تعرف حالة كل موظف؟',
-        'عندك لوحة تحكم أو تقارير؟'
-    ]
-};
-
-// --- أسئلة التأثير (من التدريب ص32) ---
-const IMPACT_QUESTIONS = [
-    'شكد وقت يضيع يومياً بسبب هاي المشكلة؟',
-    'شكد مؤثرة هاي المشكلة على سير العمل؟',
-    'إذا بقت نفس الطريقة 6 أشهر، شراح يصير؟',
-    'إذا انحلت هاي المشكلة، شنو أكثر فرق راح ينعكس عليكم؟'
-];
-
-// --- نقاط العرض حسب الألم (من التدريب ص40-42) ---
-const SOLUTION_SCRIPTS = {
-    'أخطاء بالرواتب': 'بما إن مشكلتكم الرئيسية بالرواتب، تواجد يقلل الأخطاء اليدوية ويحسب الرواتب تلقائياً مرتبطة بالحضور والإجازات.',
-    'صعوبة متابعة الحضور': 'بما إن المشكلة بالحضور، تواجد يوفر متابعة حضور وانصراف من الموبايل مع GPS وتقارير واضحة بدون أجهزة بصمة.',
-    'مشاكل الفروع': 'بما إن عندكم أكثر من فرع، تواجد يخلي الإدارة تتابع الحضور والفروع كلها من مكان واحد لحظياً.',
-    'ضياع وقت بالتقارير': 'بما إن التقارير تاخذ وقت، تواجد يولد التقارير تلقائياً بضغطة وحدة.',
-    'تحايل على الدوام': 'تواجد يمنع التحايل بنظام GPS دقيق وصور تسجيل دخول وتقارير تفصيلية.',
-    'تأخر الرواتب': 'تواجد يسرع عملية الرواتب بربطها تلقائياً بالحضور والغياب.',
-    'ما عندهم رؤية واضحة': 'تواجد يعطيك لوحة تحكم كاملة لكل موظف وكل فرع بلحظة.'
-};
-const DEFAULT_SOLUTION = 'تواجد يجمع الحضور، الشفتات، الطلبات، الرواتب، والتقارير كلها بمكان واحد من الموبايل.';
-
-// --- مميزات إضافية للعرض ---
-const FEATURES = ['حضور GPS','إدارة الشفتات','طلبات الإجازة','تقارير تفصيلية','إشعارات فورية','متابعة متعدد الفروع','احتساب رواتب تلقائي'];
-
-// --- الحالة الأساسية ---
-let state = {
-    name: '', phone: '', source: '',
-    stage: 0,
-    biz: '', employees: '', branches: '', currentSys: '',
-    pains: [], painLevel: '',
-    impacts: [],
-    outcome: '',
-    note: '',
-    askedQs: {},
-    openResp: '',
-    followTime: '',
-    diagAgree: '',
-    features: [],
-    timerSec: 0,
-    // متغيرات إضافية
-    leadStatus: 'Lead', // Lead | Qualified | ReadyToBuy
-    callStartTime: null,
-    voiceNotes: [] // مسار أو blob
-};
-
-// --- حفظ واسترجاع من localStorage ---
-const STORAGE_KEY = 'tawajud_sales_coach_state';
-
-function saveState() {
-    try {
-        const data = { ...state };
-        // لا نحفظ blobs الصوتية لأنها كبيرة
-        delete data.voiceNotes;
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-    } catch(e) {}
-}
-
-function loadState() {
-    try {
-        const raw = localStorage.getItem(STORAGE_KEY);
+    // --- تحميل البيانات من localStorage ---
+    function loadData() {
+        const raw = localStorage.getItem('tawajud_crm_arabic');
         if (raw) {
-            const saved = JSON.parse(raw);
-            Object.assign(state, saved);
-            // استعادة المؤقت إذا كانت مكالمة قائمة
-            if (state.callStartTime) {
-                const elapsed = Math.floor((Date.now() - state.callStartTime) / 1000);
-                state.timerSec = elapsed;
-            }
-            return true;
+            try { clients = JSON.parse(raw); } catch(e) { clients = []; }
+        } else {
+            // بيانات تجريبية
+            clients = [
+                { id: Date.now()+1, name: 'أبو محمد', phone: '07701234567', sales: 'علي', position: 'مدير', bizname: 'مطعم البركة', owner: 'أبو محمد', industry: 'مطعم', employees: 7, branches: 3, city: 'بغداد', currentSys: 'Excel', pain: 'أخطاء بالرواتب', need: 'عالي', contacted: 'نعم', appStatus: 'غير مثبت', source: 'واتساب', lastContact: '2026-06-01', nextFollow: '2026-06-10', probability: 75, amount: 350000, notes: 'مهتم جداً' },
+                { id: Date.now()+2, name: 'أحمد', phone: '07801234567', sales: 'علي', position: 'مالك', bizname: 'صيدلية الشفاء', owner: 'أحمد', industry: 'صيدلية', employees: 5, branches: 1, city: 'البصرة', currentSys: 'ورقي', pain: 'تأخر الرواتب', need: 'متوسط', contacted: 'لا', appStatus: 'غير مثبت', source: 'فيسبوك', lastContact: '', nextFollow: '2026-06-15', probability: 50, amount: 200000, notes: 'يريد عرض سعر' }
+            ];
+            saveData();
         }
-    } catch(e) {}
-    return false;
-}
-
-// --- بدء المكالمة ---
-function startCall() {
-    state.name = document.getElementById('inp-name').value.trim() || 'العميل';
-    state.phone = document.getElementById('inp-phone').value.trim() || '';
-    state.source = document.querySelector('#source-btns .selected')?.dataset.source || '';
-    state.callStartTime = Date.now();
-    state.timerSec = 0;
-
-    document.getElementById('hdr-name').textContent = state.name;
-    document.getElementById('hdr-phone').textContent = state.phone;
-    document.getElementById('start-view').style.display = 'none';
-    document.getElementById('call-view').style.display = 'block';
-
-    buildStagesBar();
-    renderStage();
-    startTimer();
-    saveState();
-}
-
-// --- المؤقت ---
-let timerInt = null;
-function startTimer() {
-    if (timerInt) clearInterval(timerInt);
-    timerInt = setInterval(() => {
-        state.timerSec++;
-        updateTimerDisplay();
-        saveState();
-    }, 1000);
-    updateTimerDisplay();
-}
-
-function updateTimerDisplay() {
-    const m = String(Math.floor(state.timerSec / 60)).padStart(2,'0');
-    const s = String(state.timerSec % 60).padStart(2,'0');
-    document.getElementById('call-timer').textContent = m + ':' + s;
-}
-
-// --- شريط المراحل ---
-function buildStagesBar() {
-    const bar = document.getElementById('stages-bar');
-    bar.innerHTML = STAGES.map((st, i) =>
-        `<div class="stage-dot" id="sdot-${i}" title="${st.name}"></div>`
-    ).join('');
-    updateStagesBar();
-}
-
-function updateStagesBar() {
-    STAGES.forEach((_, i) => {
-        const d = document.getElementById('sdot-' + i);
-        if (!d) return;
-        d.className = 'stage-dot ' + (i < state.stage ? 'done' : i === state.stage ? 'active' : '');
-    });
-}
-
-// --- ملخص العميل المصغر ---
-function updateMini() {
-    const tags = [];
-    if (state.biz) tags.push(`نشاط: <span>${state.biz}</span>`);
-    if (state.employees) tags.push(`موظفين: <span>${state.employees}</span>`);
-    if (state.branches) tags.push(`فروع: <span>${state.branches}</span>`);
-    if (state.currentSys) tags.push(`نظام: <span>${state.currentSys}</span>`);
-    if (state.pains.length) tags.push(`ألم: <span>${state.pains.join('، ')}</span>`);
-    if (state.painLevel) tags.push(`قوة: <span>${state.painLevel}</span>`);
-    document.getElementById('client-mini').innerHTML = tags.map(t => `<div class="mini-tag">${t}</div>`).join('');
-}
-
-// --- التنقل بين المراحل ---
-function goNext() {
-    if (state.stage < STAGES.length - 1) {
-        state.stage++;
-        updateStagesBar();
-        updateMini();
-        renderStage();
-        saveState();
     }
-}
-
-function goBack() {
-    if (state.stage > 0) {
-        state.stage--;
-        updateStagesBar();
-        renderStage();
-        saveState();
+    function saveData() {
+        localStorage.setItem('tawajud_crm_arabic', JSON.stringify(clients));
     }
-}
 
-// --- وظيفة مساعدة لتحديد تصنيف العميل ---
-function updateLeadStatus() {
-    const hasPain = state.pains.length > 0;
-    const hasProblem = state.biz && state.employees && state.currentSys;
-    const readySignals = state.outcome === 'demo' || state.outcome === 'price' || state.diagAgree === 'وافق';
-    const askingImplementation = state.askedQs['شكد يحتاج وقت التفعيل؟'] || false;
-
-    if (readySignals || askingImplementation) {
-        state.leadStatus = 'ReadyToBuy';
-    } else if (hasPain && hasProblem) {
-        state.leadStatus = 'Qualified';
-    } else {
-        state.leadStatus = 'Lead';
+    // --- التبديل بين القائمة والنموذج ---
+    function switchTab(tab) {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        if (tab === 'list') {
+            document.querySelectorAll('.tab-btn')[0].classList.add('active');
+            document.getElementById('view-list').classList.add('active');
+            document.getElementById('view-form').classList.remove('active');
+            renderList();
+            updateStats();
+        } else {
+            document.querySelectorAll('.tab-btn')[1].classList.add('active');
+            document.getElementById('view-list').classList.remove('active');
+            document.getElementById('view-form').classList.add('active');
+            resetForm();
+        }
     }
-}
 
-// --- زر المساعدة (يعرض أفضل سؤال للمرحلة) ---
-function showHelp() {
-    const stage = state.stage;
-    let suggestion = '';
-    switch(stage) {
-        case 0: suggestion = 'اسأله: ممكن أعرف اسمك ومجال عملك؟'; break;
-        case 1: suggestion = 'اسأله: شنو نوع النشاط وعدد الموظفين عندكم؟'; break;
-        case 2:
-            if (state.pains.length === 0) suggestion = 'اسأله: شنو أكثر مشكلة تواجهوها إدارياً حالياً؟';
-            else {
-                const pain = state.pains[0];
-                const qs = PAIN_QUESTIONS[pain] || ['شنو تفاصيل هذه المشكلة؟'];
-                suggestion = 'اسأله: ' + qs[0];
-            }
-            break;
-        case 3: suggestion = 'اسأله: شكد وقت يضيع يومياً بسبب هاي المشكلة؟'; break;
-        case 4: suggestion = 'اقرأ التلخيص وانتظر رد العميل'; break;
-        case 5: suggestion = 'اربط الحل بمشكلته: ' + (SOLUTION_SCRIPTS[state.pains[0]] || DEFAULT_SOLUTION); break;
-        case 6: suggestion = 'حدد نتيجة المكالمة من الأزرار أدناه'; break;
-        default: suggestion = 'تابع مع العميل';
-    }
-    alert('💡 نصيحة: ' + suggestion);
-}
-
-// --- تسجيل صوتي (بسيط باستخدام MediaRecorder) ---
-let mediaRecorder = null;
-let audioChunks = [];
-let isRecording = false;
-
-function toggleVoiceNote() {
-    if (!isRecording) {
-        startRecording();
-    } else {
-        stopRecording();
-    }
-}
-
-function startRecording() {
-    navigator.mediaDevices.getUserMedia({ audio: true })
-        .then(stream => {
-            mediaRecorder = new MediaRecorder(stream);
-            audioChunks = [];
-            mediaRecorder.ondataavailable = e => { audioChunks.push(e.data); };
-            mediaRecorder.start();
-            isRecording = true;
-            document.querySelector('.rec-btn')?.classList.add('recording');
-        })
-        .catch(err => alert('تعذر الوصول إلى الميكروفون.'));
-}
-
-function stopRecording() {
-    if (mediaRecorder && isRecording) {
-        mediaRecorder.stop();
-        mediaRecorder.onstop = () => {
-            const blob = new Blob(audioChunks, { type: 'audio/webm' });
-            const url = URL.createObjectURL(blob);
-            state.voiceNotes.push({ url, timestamp: Date.now() });
-            saveState();
-            alert('✅ تم تسجيل الملاحظة الصوتية.');
-        };
-        isRecording = false;
-        document.querySelector('.rec-btn')?.classList.remove('recording');
-    }
-}
-
-// --- عرض المرحلة الحالية ---
-function renderStage() {
-    const c = document.getElementById('stage-content');
-    const s = state.stage;
-    const st = STAGES[s];
-    updateLeadStatus();
-
-    let html = `<div class="card">
-        <div class="stage-header">
-            <div class="stage-num">${s+1}</div>
-            <div><div class="stage-name">${st.name}</div><div class="stage-hint">${st.hint}</div></div>
-            <div style="margin-right:auto; display:flex; gap:6px;">
-                <button class="help-btn" onclick="showHelp()"><i class="ti ti-question-mark"></i> ساعدني</button>
-                <button class="rec-btn ${isRecording?'recording':''}" onclick="toggleVoiceNote()" title="تسجيل ملاحظة صوتية">
-                    <i class="ti ti-microphone"></i>
-                </button>
-            </div>
-        </div>`;
-
-    // --- المرحلة 0: الافتتاح ---
-    if (s === 0) {
-        html += `
-            <div class="script-label">السكربت — اقرأه بصوت</div>
-            <div class="script-box">
-                مساء الخير، وياك ${state.name} من شركة تواجد.<br>
-                لاحظنا اهتمامك بتطبيق تواجد، ممكن آخذ من وقتك دقيقتين؟<br>
-                ممكن أعرف اسمك ومجال عملك؟
-            </div>
-            <div class="section-label">شلون رد العميل؟</div>
-            <div class="btns-grid">
-                ${['موافق يكمل','مشغول','يريد واتساب','غير مهتم','رقم خطأ'].map(b =>
-                    `<button class="choice-btn ${state.openResp===b?'selected':''}" onclick="state.openResp='${b}';renderStage();saveState()">${b}</button>`
-                ).join('')}
-            </div>`;
-        if (state.openResp === 'مشغول') {
+    // --- عرض القائمة ---
+    function renderList() {
+        const term = document.getElementById('searchInput').value.trim().toLowerCase();
+        const filtered = clients.filter(c => 
+            c.name.toLowerCase().includes(term) || 
+            c.phone.includes(term) || 
+            (c.bizname && c.bizname.toLowerCase().includes(term))
+        );
+        const container = document.getElementById('clientList');
+        if (filtered.length === 0) {
+            container.innerHTML = '<div style="text-align:center;color:#94a3b8;padding:20px;">لا يوجد عملاء</div>';
+            return;
+        }
+        let html = '';
+        filtered.forEach(c => {
             html += `
-                <div class="helper-box"><i class="ti ti-info-circle helper-icon"></i><div>قل له: متى تحب أرجع أتواصل وياك؟</div></div>
-                <div class="btns-grid">
-                    ${['بعد ساعة','اليوم بالمساء','باچر','موعد مخصص'].map(b =>
-                        `<button class="choice-btn ${state.followTime===b?'selected':''}" onclick="state.followTime='${b}';renderStage();saveState()">${b}</button>`
-                    ).join('')}
-                </div>`;
-        }
-        if (state.openResp === 'غير مهتم' || state.openResp === 'رقم خطأ') {
-            html += `<div class="helper-box"><i class="ti ti-alert-triangle helper-icon" style="color:#dc2626"></i><div>سجل السبب في الملاحظة وانهي المكالمة.</div></div>`;
-        }
-    }
-
-    // --- المرحلة 1: معلومات العميل ---
-    else if (s === 1) {
-        html += `
-            <div class="helper-box"><i class="ti ti-click helper-icon"></i><div>اضغط الأزرار حسب كلامه — ما تحتاج تكتب</div></div>
-            <div class="section-label">نوع النشاط</div>
-            <div class="btns-grid">${['مطعم','شركة','عيادة','مدرسة','مصنع','متجر','فندق','صيدلية','غير ذلك'].map(b =>
-                `<button class="choice-btn ${state.biz===b?'selected':''}" onclick="state.biz='${b}';renderStage();saveState()">${b}</button>`
-            ).join('')}</div>
-            <div class="section-label">عدد الموظفين</div>
-            <div class="btns-grid">${['أقل من 10','10-30','30-100','أكثر من 100'].map(b =>
-                `<button class="choice-btn ${state.employees===b?'selected':''}" onclick="state.employees='${b}';renderStage();saveState()">${b}</button>`
-            ).join('')}</div>
-            <div class="section-label">عدد الفروع</div>
-            <div class="btns-grid">${['فرع واحد','2-3 فروع','4-10 فروع','أكثر من 10'].map(b =>
-                `<button class="choice-btn ${state.branches===b?'selected':''}" onclick="state.branches='${b}';renderStage();saveState()">${b}</button>`
-            ).join('')}</div>
-            <div class="section-label">النظام الحالي</div>
-            <div class="btns-grid">${['Excel','بصمة','ورقي','نظام قديم','لا يوجد نظام'].map(b =>
-                `<button class="choice-btn ${state.currentSys===b?'selected':''}" onclick="state.currentSys='${b}';renderStage();saveState()">${b}</button>`
-            ).join('')}</div>
-            <div class="helper-box" style="margin-top:8px">
-                <i class="ti ti-checkup-list helper-icon"></i>
-                <div>تصنيف العميل حالياً: <strong>${state.leadStatus}</strong></div>
-            </div>`;
-    }
-
-    // --- المرحلة 2: اكتشاف الألم ---
-    else if (s === 2) {
-        const painOpts = ['أخطاء بالرواتب','صعوبة متابعة الحضور','مشاكل الفروع','ضياع وقت بالتقارير','تحايل على الدوام','تأخر الرواتب','ما عندهم رؤية واضحة'];
-        html += `
-            <div class="script-label">اسأله</div>
-            <div class="script-box">شنو أكثر مشكلة تواجهوها إدارياً حالياً؟</div>
-            <div class="section-label">نقاط الألم — ممكن أكثر من واحدة</div>
-            <div class="btns-grid">${painOpts.map(p =>
-                `<button class="choice-btn ${state.pains.includes(p)?'pain-selected':''}" onclick="sel(state.pains,'${p}');renderStage();saveState()">${p}</button>`
-            ).join('')}</div>`;
-
-        if (state.pains.length) {
-            // أسئلة ذكية حسب الألم
-            html += `<div class="section-label">أسئلة ذكية بناءً على المشكلة</div><div class="questions-list">`;
-            const shown = new Set();
-            state.pains.forEach(p => {
-                (PAIN_QUESTIONS[p] || []).forEach(q => {
-                    if (!shown.has(q)) {
-                        shown.add(q);
-                        const asked = state.askedQs[q] || false;
-                        html += `<div class="q-item ${asked?'asked':''}" onclick="state.askedQs['${q}']=true;renderStage();saveState()">
-                            <div class="q-check">${asked?'✓':''}</div><div>${q}</div>
-                        </div>`;
-                    }
-                });
-            });
-            html += '</div>';
-        }
-    }
-
-    // --- المرحلة 3: تأثير المشكلة ---
-    else if (s === 3) {
-        html += `
-            <div class="helper-box"><i class="ti ti-alert-triangle helper-icon" style="color:#ea580c"></i>
-                <div>هاي أهم مرحلة — العميل يحتاج يحس بالمشكلة حتى السعر يصير منطقي</div>
-            </div>
-            <div class="section-label">اختار الأسئلة اللي تناسب — اضغط بعد ما تسأل</div>
-            <div class="questions-list">`;
-        IMPACT_QUESTIONS.forEach(q => {
-            const asked = state.askedQs[q] || false;
-            html += `<div class="q-item ${asked?'asked':''}" onclick="state.askedQs['${q}']=true;renderStage();saveState()">
-                <div class="q-check">${asked?'✓':''}</div><div>${q}</div>
-            </div>`;
+                <div class="client-item">
+                    <div class="info">
+                        <span>${c.name}</span> <small>${c.phone}</small>
+                        <small>${c.bizname || ''} | ${c.industry || ''}</small>
+                    </div>
+                    <div class="client-actions">
+                        <button onclick="editClient('${c.id}')" title="تعديل"><i class="ti ti-pencil"></i></button>
+                        <button onclick="deleteClientById('${c.id}')" title="حذف"><i class="ti ti-trash" style="color:#dc2626;"></i></button>
+                    </div>
+                </div>
+            `;
         });
-        html += `</div>
-            <div class="section-label">قوة الألم عند العميل</div>
-            <div class="pain-level">
-                ${['ضعيف','متوسط','قوي','قوي جداً'].map(l =>
-                    `<button class="pain-btn ${state.painLevel===l?'sel':''}" onclick="state.painLevel='${l}';renderStage();saveState()">${l}</button>`
-                ).join('')}
-            </div>`;
+        container.innerHTML = html;
     }
 
-    // --- المرحلة 4: التلخيص ---
-    else if (s === 4) {
-        const biz = state.biz || '...';
-        const emp = state.employees || '...';
-        const sys = state.currentSys || '...';
-        const pain1 = state.pains[0] || '...';
-        const pain2 = state.pains[1] || '';
-        const painStr = pain2 ? `${pain1} و${pain2}` : pain1;
-
-        // بناء تلخيص مشابه لأمثلة التدريب
-        let summary = `فاللي فهمته منك إن عندكم تقريباً <strong>${emp}</strong> موظف في <strong>${biz}</strong>، وتعتمدون على <strong>${sys}</strong>، وأكثر مشكلة عندكم هي <strong>${painStr}</strong>`;
-        if (state.painLevel) summary += `، وقوة المشكلة عندكم <strong>${state.painLevel}</strong>`;
-        summary += `. صحيح؟`;
-
-        html += `
-            <div class="script-label">اقرأ هذا التلخيص للعميل</div>
-            <div class="generated-script" style="background:#f1f5f9; border-right:3px solid #2563eb; padding:12px 14px; border-radius:8px; margin-bottom:12px;">
-                ${summary}
-            </div>
-            <div class="section-label">رد العميل على التلخيص</div>
-            <div class="btns-grid">
-                <button class="choice-btn ${state.diagAgree==='وافق'?'selected':''}" onclick="state.diagAgree='وافق';renderStage();saveState()">إي صحيح</button>
-                <button class="choice-btn ${state.diagAgree==='تعديل'?'selected':''}" onclick="state.diagAgree='تعديل';renderStage();saveState()">يحتاج تعديل</button>
-                <button class="choice-btn ${state.diagAgree==='رفض'?'selected':''}" onclick="state.diagAgree='رفض';renderStage();saveState()">ما وافق</button>
-            </div>`;
-        if (state.diagAgree === 'وافق') {
-            html += `<div class="helper-box"><i class="ti ti-check helper-icon" style="color:#16a34a"></i><div style="color:#166534">ممتاز! العميل وافق على التشخيص — الآن العرض راح يكون أسهل بكثير</div></div>`;
-        } else if (state.diagAgree === 'تعديل') {
-            html += `<div class="helper-box"><i class="ti ti-edit helper-icon"></i><div>استمع للتعديل ورجع للمرحلة 2 أو 3 إذا احتجت</div></div>`;
-        }
+    // --- تحديث الإحصائيات ---
+    function updateStats() {
+        const total = clients.length;
+        const highNeed = clients.filter(c => c.need === 'عالي').length;
+        const ready = clients.filter(c => c.probability && c.probability >= 80).length;
+        document.getElementById('stats').innerHTML = `
+            <div class="stat-item"><div class="num">${total}</div><div class="label">إجمالي العملاء</div></div>
+            <div class="stat-item"><div class="num">${highNeed}</div><div class="label">حاجة عالية</div></div>
+            <div class="stat-item"><div class="num">${ready}</div><div class="label">جاهز (80%+)</div></div>
+        `;
     }
 
-    // --- المرحلة 5: عرض الحل ---
-    else if (s === 5) {
-        const mainPain = state.pains[0] || '';
-        const script = SOLUTION_SCRIPTS[mainPain] || DEFAULT_SOLUTION;
-        html += `
-            <div class="script-label">العرض حسب مشكلة العميل</div>
-            <div class="generated-script" style="background:#dbeafe; border-right:3px solid #2563eb; padding:12px 14px; border-radius:8px; margin-bottom:12px;">
-                ${script}
-            </div>
-            <div class="section-label">ميزات إضافية تذكرها حسب الحاجة</div>
-            <div class="btns-grid">${FEATURES.map(f =>
-                `<button class="choice-btn ${state.features.includes(f)?'selected':''}" onclick="state.features=state.features||[];sel(state.features,'${f}');renderStage();saveState()">${f}</button>`
-            ).join('')}</div>
-            <div class="helper-box"><i class="ti ti-info-circle helper-icon"></i><div>سعر تواجد يبدأ من <strong>5 دنانير شهرياً لكل موظف</strong> مع تجربة مجانية 14 يوماً</div></div>
-            <div class="helper-box"><i class="ti ti-checkup-list helper-icon"></i><div>تصنيف العميل الآن: <strong>${state.leadStatus}</strong></div></div>`;
-    }
-
-    // --- المرحلة 6: الخطوة التالية ---
-    else if (s === 6) {
-        html += `
-            <div class="section-label">نتيجة المكالمة</div>
-            <div class="outcome-grid">
-                <button class="outcome-btn ${state.outcome==='demo'?'sel-demo':''}" onclick="state.outcome='demo';renderStage();saveState()"><i class="ti ti-device-desktop"></i><br>حجز ديمو</button>
-                <button class="outcome-btn ${state.outcome==='price'?'sel-price':''}" onclick="state.outcome='price';renderStage();saveState()"><i class="ti ti-currency-dollar"></i><br>عرض سعر</button>
-                <button class="outcome-btn ${state.outcome==='whatsapp'?'sel-whatsapp':''}" onclick="state.outcome='whatsapp';renderStage();saveState()"><i class="ti ti-brand-whatsapp"></i><br>يريد واتساب</button>
-                <button class="outcome-btn ${state.outcome==='follow'?'sel-follow':''}" onclick="state.outcome='follow';renderStage();saveState()"><i class="ti ti-clock"></i><br>متابعة</button>
-                <button class="outcome-btn ${state.outcome==='unfit'?'sel-unfit':''}" onclick="state.outcome='unfit';renderStage();saveState()"><i class="ti ti-x"></i><br>غير مؤهل</button>
-                <button class="outcome-btn ${state.outcome==='notinterested'?'sel-notinterested':''}" onclick="state.outcome='notinterested';renderStage();saveState()"><i class="ti ti-thumb-down"></i><br>غير مهتم</button>
-            </div>`;
-
-        // نصوص مقترحة حسب النتيجة
-        const scriptMap = {
-            'demo': 'تحب أخليك تشوف ديمو سريع حتى أوضحلك شلون راح تنحل هاي النقطة عملياً؟',
-            'price': 'أكيد أوضحلك السعر، بس خليني أتأكد من عدد الموظفين والفروع حتى أنطيك الباقة المناسبة.',
-            'follow': 'تمام، متى يكون أفضل وقت أرجع أتواصل وياك؟',
-            'whatsapp': 'أرسللك تفاصيل تواجد على الواتساب، هذا رقمك الصح؟',
+    // --- حفظ عميل (جديد أو تعديل) ---
+    function saveClient() {
+        const data = {
+            name: document.getElementById('f_name').value.trim(),
+            phone: document.getElementById('f_phone').value.trim(),
+            sales: document.getElementById('f_sales').value.trim(),
+            position: document.getElementById('f_position').value.trim(),
+            bizname: document.getElementById('f_bizname').value.trim(),
+            owner: document.getElementById('f_owner').value.trim(),
+            industry: document.getElementById('f_industry').value,
+            employees: document.getElementById('f_emp').value ? parseInt(document.getElementById('f_emp').value) : '',
+            branches: document.getElementById('f_branches').value ? parseInt(document.getElementById('f_branches').value) : '',
+            city: document.getElementById('f_city').value.trim(),
+            currentSys: document.getElementById('f_currentsys').value,
+            pain: document.getElementById('f_pain').value,
+            need: document.getElementById('f_need').value,
+            contacted: document.getElementById('f_contacted').value,
+            appStatus: document.getElementById('f_appstatus').value,
+            source: document.getElementById('f_source').value,
+            lastContact: document.getElementById('f_lastcontact').value,
+            nextFollow: document.getElementById('f_nextfollow').value,
+            probability: document.getElementById('f_probability').value ? parseInt(document.getElementById('f_probability').value) : '',
+            amount: document.getElementById('f_amount').value ? parseInt(document.getElementById('f_amount').value) : '',
+            notes: document.getElementById('f_notes').value.trim()
         };
-        if (scriptMap[state.outcome]) {
-            html += `<div class="script-label">قل له</div><div class="script-box">${scriptMap[state.outcome]}</div>`;
+
+        // التحقق من الأساسيات
+        if (!data.name) { alert('اسم العميل مطلوب'); return; }
+        if (!data.phone) { alert('رقم الهاتف مطلوب'); return; }
+
+        if (editingId) {
+            // تعديل
+            const idx = clients.findIndex(c => c.id == editingId);
+            if (idx !== -1) {
+                clients[idx] = { ...clients[idx], ...data, id: editingId };
+            }
+        } else {
+            // جديد
+            data.id = Date.now().toString();
+            clients.push(data);
         }
+        saveData();
+        switchTab('list');
+    }
 
-        // إذا outcome = follow -> اختيار وقت المتابعة
-        if (state.outcome === 'follow') {
-            html += `
-                <div class="section-label">اختر موعد المتابعة</div>
-                <div class="btns-grid">
-                    ${['بعد ساعة','اليوم مساءً','غداً صباحاً','بعد 3 أيام','موعد مخصص'].map(b =>
-                        `<button class="choice-btn ${state.followTime===b?'selected':''}" onclick="state.followTime='${b}';renderStage();saveState()">${b}</button>`
-                    ).join('')}
-                </div>`;
+    // --- تعديل عميل ---
+    function editClient(id) {
+        const c = clients.find(c => c.id == id);
+        if (!c) return;
+        editingId = id;
+        document.getElementById('formTitle').textContent = '✏️ تعديل العميل';
+        document.getElementById('saveBtn').textContent = '💾 تحديث';
+        document.getElementById('deleteBtn').style.display = 'inline-block';
+
+        document.getElementById('f_name').value = c.name;
+        document.getElementById('f_phone').value = c.phone;
+        document.getElementById('f_sales').value = c.sales || '';
+        document.getElementById('f_position').value = c.position || '';
+        document.getElementById('f_bizname').value = c.bizname || '';
+        document.getElementById('f_owner').value = c.owner || '';
+        document.getElementById('f_industry').value = c.industry || '';
+        document.getElementById('f_emp').value = c.employees || '';
+        document.getElementById('f_branches').value = c.branches || '';
+        document.getElementById('f_city').value = c.city || '';
+        document.getElementById('f_currentsys').value = c.currentSys || '';
+        document.getElementById('f_pain').value = c.pain || '';
+        document.getElementById('f_need').value = c.need || '';
+        document.getElementById('f_contacted').value = c.contacted || 'لا';
+        document.getElementById('f_appstatus').value = c.appStatus || '';
+        document.getElementById('f_source').value = c.source || '';
+        document.getElementById('f_lastcontact').value = c.lastContact || '';
+        document.getElementById('f_nextfollow').value = c.nextFollow || '';
+        document.getElementById('f_probability').value = c.probability || '';
+        document.getElementById('f_amount').value = c.amount || '';
+        document.getElementById('f_notes').value = c.notes || '';
+
+        switchTab('form');
+    }
+
+    // --- حذف عميل (أثناء التعديل) ---
+    function deleteClient() {
+        if (!editingId) return;
+        if (confirm('هل أنت متأكد من حذف هذا العميل؟')) {
+            clients = clients.filter(c => c.id != editingId);
+            saveData();
+            editingId = null;
+            switchTab('list');
         }
+    }
 
-        html += `
-            <div class="section-label">ملاحظة سريعة (اختياري)</div>
-            <textarea class="note-input" id="note-inp" placeholder="أي تفصيل مهم..." oninput="state.note=this.value;saveState()">${state.note}</textarea>
-            <div class="helper-box"><i class="ti ti-checkup-list helper-icon"></i><div>تصنيف العميل النهائي: <strong>${state.leadStatus}</strong></div></div>`;
-
-        if (state.outcome) {
-            html += `<button class="btn-next" style="margin-top:12px" onclick="finishCall()"><i class="ti ti-check"></i> حفظ وإنهاء المكالمة</button>`;
+    // --- حذف من القائمة ---
+    function deleteClientById(id) {
+        if (confirm('هل أنت متأكد من حذف هذا العميل؟')) {
+            clients = clients.filter(c => c.id != id);
+            saveData();
+            renderList();
+            updateStats();
         }
     }
 
-    // --- أزرار التنقل ---
-    if (s < 6) {
-        html += `<div class="nav-row" style="margin-top:14px; display:flex; gap:8px;">`;
-        if (s > 0) html += `<button class="btn-back" onclick="goBack()"><i class="ti ti-arrow-right"></i></button>`;
-        html += `<button class="btn-next" onclick="goNext()">التالي — ${STAGES[s+1]?.name || 'إنهاء'} <i class="ti ti-arrow-left"></i></button>`;
-        html += `</div>`;
-    } else if (!state.outcome) {
-        html += `<div class="nav-row" style="margin-top:14px; display:flex; gap:8px;"><button class="btn-back" onclick="goBack()"><i class="ti ti-arrow-right"></i></button></div>`;
+    // --- تصدير CSV ---
+    function exportCSV() {
+        if (clients.length === 0) { alert('لا يوجد عملاء للتصدير'); return; }
+        const headers = ['الاسم','الهاتف','مندوب','المنصب','النشاط','صاحب القرار','نوع النشاط','عدد الموظفين','الفروع','المدينة','النظام الحالي','المشكلة','مستوى الحاجة','تم الاتصال','حالة التطبيق','المصدر','آخر اتصال','متابعة','نسبة%','المبلغ','ملاحظات'];
+        const rows = clients.map(c => [
+            c.name, c.phone, c.sales, c.position, c.bizname, c.owner, c.industry,
+            c.employees, c.branches, c.city, c.currentSys, c.pain, c.need,
+            c.contacted, c.appStatus, c.source, c.lastContact, c.nextFollow,
+            c.probability, c.amount, c.notes
+        ]);
+        let csv = headers.join(',') + '\n';
+        rows.forEach(r => {
+            csv += r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',') + '\n';
+        });
+        const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'تواجد_CRM.csv';
+        link.click();
     }
 
-    html += `</div>`;
-    c.innerHTML = html;
-
-    // استعادة قيمة الملاحظة
-    if (s === 6) {
-        const ni = document.getElementById('note-inp');
-        if (ni) ni.value = state.note;
+    // --- مسح النموذج ---
+    function resetForm() {
+        editingId = null;
+        document.getElementById('formTitle').textContent = '➕ عميل جديد';
+        document.getElementById('saveBtn').textContent = '💾 حفظ العميل';
+        document.getElementById('deleteBtn').style.display = 'none';
+        document.querySelectorAll('#view-form input, #view-form select, #view-form textarea').forEach(el => {
+            if (el.tagName === 'SELECT') el.selectedIndex = 0;
+            else el.value = '';
+        });
+        document.getElementById('f_contacted').value = 'لا';
     }
 
-    // تحديث المؤقت
-    updateTimerDisplay();
-}
-
-// --- وظيفة مساعدة للاختيار المتعدد ---
-function sel(arr, val) {
-    const i = arr.indexOf(val);
-    if (i === -1) arr.push(val);
-    else arr.splice(i, 1);
-}
-
-// --- إنهاء المكالمة ---
-function finishCall() {
-    clearInterval(timerInt);
-    const m = String(Math.floor(state.timerSec / 60)).padStart(2,'0');
-    const s2 = String(state.timerSec % 60).padStart(2,'0');
-    const outcomeLabels = {
-        demo:'حجز ديمو', price:'عرض سعر', whatsapp:'واتساب',
-        follow:'متابعة', unfit:'غير مؤهل', notinterested:'غير مهتم'
-    };
-
-    // توليد ملخص المكالمة
-    document.getElementById('stage-content').innerHTML = `
-        <div class="card">
-            <div class="finish-card">
-                <div class="finish-icon"><i class="ti ti-circle-check"></i></div>
-                <div class="finish-title">المكالمة انتهت</div>
-                <div class="finish-sub">مدة المكالمة: ${m}:${s2}</div>
-            </div>
-        </div>
-        <div class="card">
-            <div class="stage-name" style="margin-bottom:12px">ملخص العميل</div>
-            <div class="summary-box" style="background:#f8fafc; border-radius:8px; padding:12px 14px; border:1px solid #e2e8f0;">
-                ${[
-                    ['الاسم', state.name],
-                    ['الهاتف', state.phone || '—'],
-                    ['المصدر', state.source || '—'],
-                    ['النشاط', state.biz || '—'],
-                    ['الموظفين', state.employees || '—'],
-                    ['الفروع', state.branches || '—'],
-                    ['النظام الحالي', state.currentSys || '—'],
-                    ['المشاكل', state.pains.join('، ') || '—'],
-                    ['قوة الألم', state.painLevel || '—'],
-                    ['تصنيف العميل', state.leadStatus],
-                    ['النتيجة', outcomeLabels[state.outcome] || '—'],
-                    ['موعد المتابعة', state.followTime || '—'],
-                    ['ملاحظة', state.note || '—']
-                ].map(([key, val]) =>
-                    `<div style="display:flex; gap:8px; margin-bottom:4px;"><div style="color:#64748b; min-width:100px; font-size:12px;">${key}</div><div style="color:#1e293b; font-weight:500; font-size:13px;">${val}</div></div>`
-                ).join('')}
-            </div>
-            <button class="btn-next" onclick="resetApp()"><i class="ti ti-phone-plus"></i> مكالمة جديدة</button>
-        </div>`;
-    document.getElementById('stages-bar').innerHTML = STAGES.map(() => `<div class="stage-dot done"></div>`).join('');
-    // حفظ الحالة النهائية
-    saveState();
-}
-
-// --- إعادة تعيين التطبيق ---
-function resetApp() {
-    if (timerInt) clearInterval(timerInt);
-    // مسح الحالة
-    state = {
-        name:'', phone:'', source:'', stage:0, biz:'', employees:'', branches:'', currentSys:'',
-        pains:[], painLevel:'', impacts:[], outcome:'', note:'', askedQs:{}, openResp:'', followTime:'',
-        diagAgree:'', features:[], timerSec:0, callStartTime:null, leadStatus:'Lead', voiceNotes:[]
-    };
-    localStorage.removeItem(STORAGE_KEY);
-    document.getElementById('start-view').style.display = 'block';
-    document.getElementById('call-view').style.display = 'none';
-    document.getElementById('inp-name').value = '';
-    document.getElementById('inp-phone').value = '';
-    document.querySelectorAll('#source-btns .choice-btn').forEach(b => b.classList.remove('selected'));
-}
-
-// --- استعادة البيانات عند التحميل ---
-window.addEventListener('DOMContentLoaded', () => {
-    if (loadState() && state.callStartTime && state.name) {
-        // هناك مكالمة قائمة
-        document.getElementById('start-view').style.display = 'none';
-        document.getElementById('call-view').style.display = 'block';
-        document.getElementById('hdr-name').textContent = state.name;
-        document.getElementById('hdr-phone').textContent = state.phone;
-        buildStagesBar();
-        renderStage();
-        startTimer();
-        updateTimerDisplay();
-    }
-});
+    // --- التهيئة ---
+    loadData();
+    renderList();
+    updateStats();
 </script>
 </body>
 </html>
