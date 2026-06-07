@@ -3,548 +3,420 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مساعد تواجد للمبيعات</title>
+    <title>تواجد CRM</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; direction: rtl; }
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f5f7fa; color: #1e293b; padding: 12px; }
-        .app { max-width: 680px; margin: 0 auto; }
+        .app { max-width: 700px; margin: 0 auto; }
 
         .card { background: #fff; border-radius: 16px; padding: 16px; margin-bottom: 12px; border: 1px solid #e9edf2; }
-        .stage-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
-        .stage-num { width: 32px; height: 32px; border-radius: 50%; background: #2563eb; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 600; }
-        .stage-name { font-weight: 600; font-size: 16px; }
-        .stage-hint { font-size: 12px; color: #64748b; }
+        h2 { font-size: 18px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
 
-        .script-box { background: #f1f5f9; border-right: 3px solid #2563eb; padding: 12px 14px; border-radius: 8px; margin-bottom: 12px; font-size: 13px; line-height: 1.7; }
-        .label { font-size: 12px; color: #64748b; margin-bottom: 4px; font-weight: 500; }
+        .stats { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+        .stat-item { background: #f8fafc; border-radius: 10px; padding: 8px 16px; text-align: center; flex: 1; min-width: 80px; border: 1px solid #e2e8f0; }
+        .stat-item .num { font-size: 20px; font-weight: 700; color: #2563eb; }
+        .stat-item .label { font-size: 12px; color: #64748b; }
 
-        input, select, textarea { width: 100%; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; font-family: inherit; background: #fff; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .full { grid-column: 1 / -1; }
+        label { font-size: 13px; font-weight: 500; color: #475569; display: block; margin-bottom: 3px; }
+        input, select, textarea { width: 100%; padding: 7px 10px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; background: #fff; font-family: inherit; }
         textarea { min-height: 60px; resize: vertical; }
 
-        .btns-grid { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
-        .choice-btn { border: 1px solid #e2e8f0; border-radius: 8px; padding: 6px 14px; background: #fff; cursor: pointer; transition: 0.15s; font-size: 13px; }
-        .choice-btn:hover { background: #f8fafc; }
-        .choice-btn.selected { background: #2563eb; color: #fff; border-color: #2563eb; }
-        .choice-btn.pain-selected { background: #dc2626; color: #fff; border-color: #dc2626; }
+        .btn { padding: 8px 16px; border: none; border-radius: 8px; font-weight: 500; cursor: pointer; font-size: 14px; transition: 0.15s; }
+        .btn-primary { background: #2563eb; color: #fff; }
+        .btn-primary:hover { background: #1d4ed8; }
+        .btn-success { background: #16a34a; color: #fff; }
+        .btn-success:hover { background: #15803d; }
+        .btn-danger { background: #dc2626; color: #fff; }
+        .btn-danger:hover { background: #b91c1c; }
+        .btn-outline { background: transparent; border: 1px solid #e2e8f0; color: #475569; }
+        .btn-outline:hover { background: #f8fafc; }
 
-        .nav-row { display: flex; gap: 8px; margin-top: 14px; }
-        .btn-next { flex: 1; padding: 10px; background: #2563eb; color: #fff; border: none; border-radius: 8px; font-weight: 500; cursor: pointer; }
-        .btn-next:hover { opacity: 0.9; }
-        .btn-back { padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; background: #fff; cursor: pointer; }
+        .row-actions { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
 
-        .client-summary { display: flex; flex-wrap: wrap; gap: 6px; padding: 8px 0; }
-        .tag { font-size: 11px; padding: 3px 10px; border-radius: 20px; background: #f1f5f9; border: 1px solid #e2e8f0; color: #475569; }
-        .tag span { font-weight: 500; color: #1e293b; }
+        /* Client list */
+        .client-item { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px 14px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; font-size: 14px; }
+        .client-item .info span { font-weight: 500; }
+        .client-item .info small { color: #64748b; font-size: 12px; display: block; }
+        .client-actions button { background: none; border: none; cursor: pointer; color: #64748b; padding: 2px 6px; }
+        .client-actions button:hover { color: #2563eb; }
 
-        .bar { display: flex; gap: 4px; margin-bottom: 12px; }
-        .bar .dot { flex: 1; height: 4px; border-radius: 2px; background: #e2e8f0; }
-        .bar .dot.done { background: #16a34a; }
-        .bar .dot.active { background: #2563eb; }
+        .search-box { display: flex; gap: 8px; margin-bottom: 12px; }
+        .search-box input { flex: 1; }
 
-        .outcome-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 12px; }
-        .outcome-btn { border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px; background: #fff; cursor: pointer; text-align: center; }
-        .outcome-btn.sel-demo { background: #dbeafe; border-color: #2563eb; color: #1e40af; }
+        /* Tabs */
+        .tab-bar { display: flex; gap: 4px; margin-bottom: 16px; background: #fff; border-radius: 12px; padding: 4px; border: 1px solid #e9edf2; }
+        .tab-btn { flex: 1; padding: 8px; border: none; border-radius: 8px; background: transparent; cursor: pointer; font-weight: 500; color: #64748b; }
+        .tab-btn.active { background: #2563eb; color: #fff; }
 
-        .finish-card { background: #f8fafc; border-radius: 12px; padding: 16px; text-align: center; }
-        #help-popup { position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%); background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); z-index: 999; width: 90%; max-width: 400px; display: none; border: 1px solid #e2e8f0; text-align: center; }
-        #help-popup p { margin-bottom: 12px; }
-        #help-popup button { padding: 6px 20px; background: #2563eb; color: #fff; border: none; border-radius: 8px; cursor: pointer; }
+        #view-list, #view-form { display: none; }
+        #view-list.active, #view-form.active { display: block; }
 
-        /* Start screen */
-        .start-screen { text-align: center; padding: 12px 0; }
-        .start-title { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
-        .start-sub { font-size: 14px; color: #64748b; margin-bottom: 20px; }
-        .btn-start { width: 100%; padding: 12px; background: #2563eb; color: #fff; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; }
+        /* المساعدة */
+        .helper { background: #f1f5f9; padding: 8px 12px; border-radius: 8px; font-size: 12px; color: #475569; margin-bottom: 8px; border-right: 3px solid #2563eb; }
 
-        /* responsive */
-        @media (max-width: 480px) { .outcome-grid { grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 480px) { .form-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 <div class="app" id="app">
+    <div class="card">
+        <h2><i class="ti ti-users" style="color:#2563eb"></i> تواجد CRM</h2>
+        <div class="stats" id="stats"></div>
+        <div class="tab-bar">
+            <button class="tab-btn active" onclick="switchTab('list')">📋 قائمة العملاء</button>
+            <button class="tab-btn" onclick="switchTab('form')">➕ عميل جديد</button>
+        </div>
+    </div>
 
-    <!-- Start -->
-    <div id="start-view">
+    <!-- قائمة العملاء -->
+    <div id="view-list" class="active">
         <div class="card">
-            <div class="start-screen">
-                <div style="font-size:32px; color:#2563eb; margin-bottom:8px"><i class="ti ti-phone-call"></i></div>
-                <div class="start-title">مساعد تواجد للمبيعات</div>
-                <div class="start-sub">ادخل التفاصيل خطوة بخطوة</div>
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="ابحث بالاسم أو الهاتف..." oninput="renderList()">
+                <button class="btn btn-primary" onclick="exportCSV()"><i class="ti ti-download"></i> تصدير</button>
             </div>
-            <div><label>اسم العميل</label><input id="inp-name" placeholder="مثال: أبو محمد"></div>
-            <div style="margin-top:8px;"><label>رقم الهاتف</label><input id="inp-phone" placeholder="07xxxxxxxx"></div>
-            <div style="margin-top:8px;"><label>مصدر العميل</label>
-                <select id="inp-source">
-                    <option value="">اختر...</option>
-                    <option>واتساب</option><option>فيسبوك</option><option>إنستغرام</option><option>تحويل</option><option>بارد</option>
-                </select>
-            </div>
-            <button class="btn-start" style="margin-top:12px" onclick="startCall()"><i class="ti ti-player-play"></i> ابدأ المكالمة</button>
+            <div id="clientList"></div>
         </div>
     </div>
 
-    <!-- Call View -->
-    <div id="call-view" style="display:none">
-        <div class="card" style="padding:12px;">
-            <div style="display:flex;justify-content:space-between;">
-                <div><strong id="hdr-name">العميل</strong><br><small id="hdr-phone"></small></div>
-                <div class="tag" id="call-timer" style="background:#dcfce7;color:#166534;">00:00</div>
+    <!-- نموذج عميل جديد / تعديل -->
+    <div id="view-form">
+        <div class="card">
+            <h2 id="formTitle">➕ عميل جديد</h2>
+            <div class="helper">🕐 يمكنك تعبئة الحقول أثناء المكالمة، ثم إكمال الباقي بعدها.</div>
+            <div class="form-grid">
+                <!-- معلومات أساسية (أثناء المكالمة) -->
+                <div><label>اسم العميل *</label><input id="f_name" placeholder="مثال: أبو محمد"></div>
+                <div><label>رقم الهاتف *</label><input id="f_phone" placeholder="07xxxxxxxx"></div>
+                <div><label>مندوب المبيعات</label><input id="f_sales" placeholder="اسمك"></div>
+                <div><label>المنصب</label><input id="f_position" placeholder="مدير / مالك"></div>
+                <div><label>اسم النشاط التجاري</label><input id="f_bizname" placeholder="مثال: مطعم البركة"></div>
+                <div><label>صاحب القرار</label><input id="f_owner" placeholder="اسم صاحب القرار"></div>
+                <div><label>نوع النشاط</label>
+                    <select id="f_industry">
+                        <option value="">اختر...</option>
+                        <option>مطعم</option><option>شركة</option><option>عيادة</option><option>مدرسة</option>
+                        <option>مصنع</option><option>متجر</option><option>فندق</option><option>صيدلية</option>
+                        <option>غير ذلك</option>
+                    </select>
+                </div>
+                <div><label>عدد الموظفين (رقم دقيق)</label><input type="number" id="f_emp" placeholder="مثال: 7"></div>
+                <div><label>عدد الفروع (رقم دقيق)</label><input type="number" id="f_branches" placeholder="مثال: 3"></div>
+                <div><label>المدينة</label><input id="f_city" placeholder="بغداد"></div>
+                <div><label>النظام الحالي</label>
+                    <select id="f_currentsys">
+                        <option value="">اختر...</option>
+                        <option>Excel</option><option>بصمة</option><option>ورقي</option>
+                        <option>نظام قديم</option><option>لا يوجد نظام</option>
+                    </select>
+                </div>
+                <div><label>المشكلة (اكتب تفصيلاً)</label><textarea id="f_problem" rows="2" placeholder="مثال: الرواتب تتأخر وكل شهر أخطاء..."></textarea></div>
+                <div><label>قوة الألم</label>
+                    <select id="f_painlevel">
+                        <option value="">اختر...</option>
+                        <option>ضعيف</option><option>متوسط</option><option>قوي</option><option>قوي جداً</option>
+                    </select>
+                </div>
+                <div><label>الاعتراضات (اختر)</label>
+                    <select id="f_objections" multiple style="height:80px;">
+                        <option>السعر غالي</option>
+                        <option>يحتاج يفكر</option>
+                        <option>مشغول حالياً</option>
+                        <option>ما عندهم ميزانية</option>
+                        <option>يخاف من التفعيل</option>
+                        <option>ما عنده وقت للتدريب</option>
+                        <option>عنده نظام ثاني</option>
+                        <option>مو صاحب القرار</option>
+                        <option>يحتاج موافقة الإدارة</option>
+                    </select>
+                </div>
+                <div><label>شخصية العميل (DISC)</label>
+                    <select id="f_personality">
+                        <option value="">اختر...</option>
+                        <option value="D">D (مسيطر، سريع)</option>
+                        <option value="I">I (اجتماعي، متحمس)</option>
+                        <option value="S">S (ثابت، يريد الاستقرار)</option>
+                        <option value="C">C (دقيق، يحب التفاصيل)</option>
+                    </select>
+                </div>
+                <!-- بعد المكالمة -->
+                <div><label>هل تم الاتصال من قبل؟</label>
+                    <select id="f_contacted">
+                        <option value="لا">لا</option>
+                        <option value="نعم">نعم</option>
+                    </select>
+                </div>
+                <div><label>حالة التطبيق</label>
+                    <select id="f_appstatus">
+                        <option value="">اختر...</option>
+                        <option>غير مثبت</option><option>مثبت</option><option>في التجربة</option>
+                    </select>
+                </div>
+                <div><label>مصدر العميل</label>
+                    <select id="f_source">
+                        <option value="">اختر...</option>
+                        <option>واتساب</option><option>فيسبوك</option><option>إنستغرام</option>
+                        <option>تحويل</option><option>بارد</option>
+                    </select>
+                </div>
+                <div><label>آخر تاريخ اتصال</label><input type="date" id="f_lastcontact"></div>
+                <div><label>موعد المتابعة القادم</label><input type="date" id="f_nextfollow"></div>
+                <div><label>نسبة احتمالية الصفقة (%)</label><input type="number" id="f_probability" min="0" max="100" placeholder="مثال: 70"></div>
+                <div class="full"><label>المبلغ التقديري (دينار عراقي)</label><input type="number" id="f_amount" placeholder="مثال: 250000"></div>
+                <div class="full"><label>نتيجة المكالمة</label>
+                    <select id="f_outcome">
+                        <option value="">اختر...</option>
+                        <option>حجز ديمو</option><option>عرض سعر</option><option>واتساب</option>
+                        <option>متابعة</option><option>غير مؤهل</option><option>غير مهتم</option>
+                    </select>
+                </div>
+                <div class="full"><label>ملاحظات</label><textarea id="f_notes" rows="2" placeholder="أي تفاصيل مهمة..."></textarea></div>
+            </div>
+            <div class="row-actions">
+                <button class="btn btn-success" id="saveBtn" onclick="saveClient()"><i class="ti ti-check"></i> حفظ العميل</button>
+                <button class="btn btn-outline" onclick="resetForm()"><i class="ti ti-refresh"></i> مسح الحقول</button>
+                <button class="btn btn-danger" id="deleteBtn" style="display:none" onclick="deleteClient()"><i class="ti ti-trash"></i> حذف</button>
             </div>
         </div>
-
-        <div class="bar" id="stages-bar"></div>
-        <div class="client-summary" id="client-mini"></div>
-
-        <div id="stage-content"></div>
-    </div>
-
-    <!-- Help popup -->
-    <div id="help-popup">
-        <p id="help-text">نصيحة</p>
-        <button onclick="document.getElementById('help-popup').style.display='none'">حسناً</button>
     </div>
 </div>
 
 <script>
-// ============================================================
-//  مساعد تواجد للمبيعات – نسخة متكاملة
-//  المراحل: افتتاح → معلومات دقيقة → المشكلة (نص) → تأثير
-//  → اعتراضات → شخصية العميل → الخطوة التالية
-// ============================================================
+    // --- البيانات ---
+    let clients = [];
+    let editingId = null;
 
-const STAGES = [
-    { name: 'الافتتاح', hint: 'تعرف منو الشخص وتكمل' },
-    { name: 'المعلومات الدقيقة', hint: 'نشاط، موظفين (رقم)، فروع (رقم)، صاحب القرار' },
-    { name: 'المشكلة', hint: 'اكتب المشكلة بالتفصيل' },
-    { name: 'تأثير المشكلة', hint: 'كبّر الألم' },
-    { name: 'الاعتراضات', hint: 'شنو اعتراضات العميل؟' },
-    { name: 'شخصية العميل', hint: 'D, I, S, C – اختر الأنسب' },
-    { name: 'الخطوة التالية', hint: 'نتيجة المكالمة' }
-];
-
-const OBJECTION_OPTIONS = [
-    'السعر غالي',
-    'يحتاج يفكر',
-    'مشغول حالياً',
-    'ما عندهم ميزانية',
-    'يخاف من التفعيل',
-    'ما عنده وقت للتدريب',
-    'عنده نظام ثاني',
-    'مو صاحب القرار',
-    'يحتاج موافقة الإدارة'
-];
-
-let state = {
-    name: '', phone: '', source: '',
-    stage: 0,
-    biz: '', employees: null, branches: null, currentSys: '', decisionMaker: '',
-    problem: '', // المشكلة (نص مفتوح)
-    painLevel: '',
-    impactAsked: {},
-    objections: [], // اعتراضات
-    personality: '', // D, I, S, C
-    outcome: '',
-    note: '',
-    timerSec: 0,
-    callStartTime: null,
-    openResp: '',
-    followTime: '',
-    diagAgree: ''
-};
-
-const STORAGE_KEY = 'tawajud_sales_integrated';
-
-function saveState() {
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
-}
-
-function loadState() {
-    try {
-        const raw = localStorage.getItem(STORAGE_KEY);
+    // --- تحميل البيانات ---
+    function loadData() {
+        const raw = localStorage.getItem('tawajud_crm_full');
         if (raw) {
-            const s = JSON.parse(raw);
-            Object.assign(state, s);
-            if (state.callStartTime) {
-                state.timerSec = Math.floor((Date.now() - state.callStartTime) / 1000);
-            }
-            return true;
+            try { clients = JSON.parse(raw); } catch(e) { clients = []; }
+        } else {
+            // بيانات تجريبية
+            clients = [
+                { id: Date.now()+1, name: 'أبو محمد', phone: '07701234567', sales: 'علي', position: 'مدير', bizname: 'مطعم البركة', owner: 'أبو محمد', industry: 'مطعم', employees: 7, branches: 3, city: 'بغداد', currentSys: 'Excel', problem: 'أخطاء بالرواتب', painlevel: 'قوي', objections: ['يخاف من التفعيل'], personality: 'D', contacted: 'نعم', appStatus: 'غير مثبت', source: 'واتساب', lastContact: '2026-06-01', nextFollow: '2026-06-10', probability: 75, amount: 350000, outcome: 'حجز ديمو', notes: 'مهتم جداً' },
+                { id: Date.now()+2, name: 'أحمد', phone: '07801234567', sales: 'علي', position: 'مالك', bizname: 'صيدلية الشفاء', owner: 'أحمد', industry: 'صيدلية', employees: 5, branches: 1, city: 'البصرة', currentSys: 'ورقي', problem: 'تأخر الرواتب', painlevel: 'متوسط', objections: ['يحتاج يفكر'], personality: 'I', contacted: 'لا', appStatus: 'غير مثبت', source: 'فيسبوك', lastContact: '', nextFollow: '2026-06-15', probability: 50, amount: 200000, outcome: 'عرض سعر', notes: 'يريد عرض سعر' }
+            ];
+            saveData();
         }
-    } catch(e) {}
-    return false;
-}
-
-let timerInt = null;
-
-function startCall() {
-    state.name = document.getElementById('inp-name').value.trim() || 'العميل';
-    state.phone = document.getElementById('inp-phone').value.trim() || '';
-    state.source = document.getElementById('inp-source').value || '';
-    state.callStartTime = Date.now();
-    state.timerSec = 0;
-
-    document.getElementById('hdr-name').textContent = state.name;
-    document.getElementById('hdr-phone').textContent = state.phone;
-    document.getElementById('start-view').style.display = 'none';
-    document.getElementById('call-view').style.display = 'block';
-
-    buildBar();
-    renderStage();
-    startTimer();
-    saveState();
-}
-
-function startTimer() {
-    if (timerInt) clearInterval(timerInt);
-    timerInt = setInterval(() => {
-        state.timerSec++;
-        document.getElementById('call-timer').textContent = 
-            String(Math.floor(state.timerSec/60)).padStart(2,'0') + ':' + 
-            String(state.timerSec%60).padStart(2,'0');
-        saveState();
-    }, 1000);
-    document.getElementById('call-timer').textContent = '00:00';
-}
-
-function buildBar() {
-    const bar = document.getElementById('stages-bar');
-    bar.innerHTML = STAGES.map((_,i) => `<div class="dot" id="sdot-${i}"></div>`).join('');
-    updateBar();
-}
-
-function updateBar() {
-    STAGES.forEach((_,i) => {
-        const d = document.getElementById('sdot-'+i);
-        if (d) d.className = 'dot ' + (i < state.stage ? 'done' : i === state.stage ? 'active' : '');
-    });
-}
-
-function goNext() {
-    if (state.stage < STAGES.length-1) {
-        state.stage++;
-        updateBar();
-        renderStage();
-        saveState();
     }
-}
-
-function goBack() {
-    if (state.stage > 0) {
-        state.stage--;
-        updateBar();
-        renderStage();
-        saveState();
+    function saveData() {
+        localStorage.setItem('tawajud_crm_full', JSON.stringify(clients));
     }
-}
 
-function sel(arr, val) {
-    const i = arr.indexOf(val);
-    if (i === -1) arr.push(val); else arr.splice(i, 1);
-}
-
-function showHelp() {
-    const s = state.stage;
-    let txt = '';
-    switch(s) {
-        case 0: txt = 'اسأله: ممكن أعرف اسمك ومجال عملك؟'; break;
-        case 1: txt = 'اسأله: شكد عدد الموظفين بالضبط؟ وشنو النظام الحالي؟'; break;
-        case 2: txt = 'اكتب المشكلة بكلمات العميل بالتفصيل.'; break;
-        case 3: txt = 'اسأله: شكد وقت يضيع يومياً بسبب هاي المشكلة؟'; break;
-        case 4: txt = 'استمع لاعتراضاته واختر المناسب.'; break;
-        case 5: txt = 'حدد شخصية العميل (D = سريع، I = اجتماعي، S = ثابت، C = دقيق).'; break;
-        case 6: txt = 'اختر نتيجة المكالمة.'; break;
-        default: txt = 'تابع مع العميل.';
+    // --- التبديل ---
+    function switchTab(tab) {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        if (tab === 'list') {
+            document.querySelectorAll('.tab-btn')[0].classList.add('active');
+            document.getElementById('view-list').classList.add('active');
+            document.getElementById('view-form').classList.remove('active');
+            renderList();
+            updateStats();
+        } else {
+            document.querySelectorAll('.tab-btn')[1].classList.add('active');
+            document.getElementById('view-list').classList.remove('active');
+            document.getElementById('view-form').classList.add('active');
+            resetForm();
+        }
     }
-    document.getElementById('help-text').textContent = '💡 ' + txt;
-    document.getElementById('help-popup').style.display = 'block';
-}
 
-function renderStage() {
-    const c = document.getElementById('stage-content');
-    const s = state.stage;
-    const st = STAGES[s];
-    let html = `<div class="card">
-        <div class="stage-header">
-            <div class="stage-num">${s+1}</div>
-            <div><div class="stage-name">${st.name}</div><div class="stage-hint">${st.hint}</div></div>
-            <div style="margin-right:auto;"><button class="choice-btn" onclick="showHelp()" style="border-color:#94a3b8;color:#2563eb;"><i class="ti ti-question-mark"></i></button></div>
-        </div>`;
-
-    // ===== المرحلة 0 =====
-    if (s === 0) {
-        html += `
-            <div class="script-box">
-                مساء الخير، وياك ${state.name} من تواجد.<br>
-                لاحظنا اهتمامك بتطبيق تواجد، ممكن آخذ من وقتك دقيقتين؟<br>
-                ممكن أعرف اسمك ومجال عملك؟
-            </div>
-            <div class="label">شلون رد العميل؟</div>
-            <div class="btns-grid">
-                ${['موافق يكمل','مشغول','يريد واتساب','غير مهتم','رقم خطأ'].map(b =>
-                    `<button class="choice-btn ${state.openResp===b?'selected':''}" onclick="state.openResp='${b}';renderStage();saveState()">${b}</button>`
-                ).join('')}
-            </div>`;
-        if (state.openResp === 'مشغول') {
+    // --- عرض القائمة ---
+    function renderList() {
+        const term = document.getElementById('searchInput').value.trim().toLowerCase();
+        const filtered = clients.filter(c => 
+            c.name.toLowerCase().includes(term) || 
+            c.phone.includes(term) || 
+            (c.bizname && c.bizname.toLowerCase().includes(term))
+        );
+        const container = document.getElementById('clientList');
+        if (filtered.length === 0) {
+            container.innerHTML = '<div style="text-align:center;color:#94a3b8;padding:20px;">لا يوجد عملاء</div>';
+            return;
+        }
+        let html = '';
+        filtered.forEach(c => {
             html += `
-                <div style="margin-top:6px;font-size:13px;">قل له: متى تحب أرجع أتواصل وياك؟</div>
-                <div class="btns-grid">
-                    ${['بعد ساعة','اليوم بالمساء','باچر','موعد مخصص'].map(b =>
-                        `<button class="choice-btn ${state.followTime===b?'selected':''}" onclick="state.followTime='${b}';renderStage();saveState()">${b}</button>`
-                    ).join('')}
-                </div>`;
-        }
-    }
-
-    // ===== المرحلة 1 =====
-    else if (s === 1) {
-        html += `
-            <div class="label">نوع النشاط التجاري</div>
-            <select style="margin-bottom:8px;" onchange="state.biz=this.value;renderStage();saveState()">
-                <option value="">اختر...</option>
-                ${['مطعم','شركة','عيادة','مدرسة','مصنع','متجر','فندق','صيدلية','غير ذلك'].map(b =>
-                    `<option value="${b}" ${state.biz===b?'selected':''}>${b}</option>`
-                ).join('')}
-            </select>
-            <div class="label">عدد الموظفين (الرقم الدقيق)</div>
-            <input type="number" min="1" placeholder="مثال: 7" value="${state.employees || ''}" style="margin-bottom:8px;" oninput="state.employees=parseInt(this.value)||null;renderStage();saveState()">
-            <div class="label">عدد الفروع (الرقم الدقيق)</div>
-            <input type="number" min="1" placeholder="مثال: 3" value="${state.branches || ''}" style="margin-bottom:8px;" oninput="state.branches=parseInt(this.value)||null;renderStage();saveState()">
-            <div class="label">النظام الحالي</div>
-            <select style="margin-bottom:8px;" onchange="state.currentSys=this.value;renderStage();saveState()">
-                <option value="">اختر...</option>
-                ${['Excel','بصمة','ورقي','نظام قديم','لا يوجد نظام'].map(b =>
-                    `<option value="${b}" ${state.currentSys===b?'selected':''}>${b}</option>`
-                ).join('')}
-            </select>
-            <div class="label">منو صاحب القرار؟ (الاسم/المنصب)</div>
-            <input type="text" placeholder="مثال: المدير العام (أبو محمد)" value="${state.decisionMaker || ''}" oninput="state.decisionMaker=this.value;renderStage();saveState()">`;
-    }
-
-    // ===== المرحلة 2 =====
-    else if (s === 2) {
-        html += `
-            <div class="script-box">اسأله: شنو أكثر مشكلة تواجهوها إدارياً حالياً؟</div>
-            <div class="label">اكتب المشكلة بالتفصيل (بكلمات العميل)</div>
-            <textarea rows="3" placeholder="مثال: الرواتب تتأخر وكل شهر تصير أخطاء في الحسابات..." oninput="state.problem=this.value;saveState()">${state.problem}</textarea>
-            <div style="margin-top:8px;font-size:12px;color:#64748b;">يمكنك أيضاً اختيار تصنيف سريع:</div>
-            <div class="btns-grid">
-                ${['أخطاء بالرواتب','صعوبة الحضور','مشاكل الفروع','ضياع وقت بالتقارير','تحايل','تأخر الرواتب','رؤية غير واضحة'].map(p =>
-                    `<button class="choice-btn ${state.problem.includes(p)?'pain-selected':''}" onclick="state.problem=state.problem?state.problem+'\n'+p:p;renderStage();saveState()">${p}</button>`
-                ).join('')}
-            </div>
-            <div style="margin-top:8px;" class="label">قوة الألم عند العميل</div>
-            <div class="btns-grid">
-                ${['ضعيف','متوسط','قوي','قوي جداً'].map(l =>
-                    `<button class="choice-btn ${state.painLevel===l?'selected':''}" onclick="state.painLevel='${l}';renderStage();saveState()">${l}</button>`
-                ).join('')}
-            </div>`;
-    }
-
-    // ===== المرحلة 3 =====
-    else if (s === 3) {
-        const impactQs = [
-            'شكد وقت يضيع يومياً بسبب هاي المشكلة؟',
-            'شكد مؤثرة هاي المشكلة على سير العمل؟',
-            'إذا بقت نفس الطريقة 6 أشهر، شراح يصير؟',
-            'إذا انحلت هاي المشكلة، شنو أكثر فرق راح ينعكس عليكم؟'
-        ];
-        html += `<div class="label">اختار الأسئلة اللي تسألها (اضغط بعد ما تسأل)</div>`;
-        impactQs.forEach(q => {
-            const asked = state.impactAsked[q] || false;
-            html += `<div style="display:flex;align-items:center;gap:8px;padding:6px 10px;border:1px solid ${asked?'#16a34a':'#e2e8f0'};border-radius:8px;margin-bottom:4px;background:${asked?'#dcfce7':'#fff'};cursor:default;" onclick="state.impactAsked['${q}']=!state.impactAsked['${q}'];renderStage();saveState()">
-                <div style="width:20px;height:20px;border-radius:50%;border:1px solid #e2e8f0;display:flex;align-items:center;justify-content:center;background:${asked?'#16a34a':'#fff'};color:${asked?'#fff':'#94a3b8'};font-size:12px;">${asked?'✓':''}</div>
-                <div>${q}</div>
-            </div>`;
+                <div class="client-item">
+                    <div class="info">
+                        <span>${c.name}</span> <small>${c.phone}</small>
+                        <small>${c.bizname || ''} | ${c.industry || ''}</small>
+                        <small>النتيجة: ${c.outcome || ''} | الشخصية: ${c.personality || ''}</small>
+                    </div>
+                    <div class="client-actions">
+                        <button onclick="editClient('${c.id}')" title="تعديل"><i class="ti ti-pencil"></i></button>
+                        <button onclick="deleteClientById('${c.id}')" title="حذف"><i class="ti ti-trash" style="color:#dc2626;"></i></button>
+                    </div>
+                </div>
+            `;
         });
+        container.innerHTML = html;
     }
 
-    // ===== المرحلة 4 =====
-    else if (s === 4) {
-        html += `
-            <div class="script-box">استمع لاعتراضات العميل واختر المناسبة</div>
-            <div class="label">الاعتراضات (اختر واحدة أو أكثر)</div>
-            <div class="btns-grid">${OBJECTION_OPTIONS.map(o =>
-                `<button class="choice-btn ${state.objections.includes(o)?'selected':''}" onclick="sel(state.objections,'${o}');renderStage();saveState()">${o}</button>`
-            ).join('')}</div>
-            <div class="label">أضف اعتراضاً آخر (اكتبه)</div>
-            <input type="text" placeholder="اعتراض آخر..." oninput="if(this.value.trim()){state.objections.push(this.value.trim());this.value='';renderStage();saveState();}">`;
+    // --- إحصائيات ---
+    function updateStats() {
+        const total = clients.length;
+        const highNeed = clients.filter(c => c.painlevel === 'قوي' || c.painlevel === 'قوي جداً').length;
+        const ready = clients.filter(c => c.probability && c.probability >= 80).length;
+        document.getElementById('stats').innerHTML = `
+            <div class="stat-item"><div class="num">${total}</div><div class="label">إجمالي العملاء</div></div>
+            <div class="stat-item"><div class="num">${highNeed}</div><div class="label">ألم قوي</div></div>
+            <div class="stat-item"><div class="num">${ready}</div><div class="label">جاهز (80%+)</div></div>
+        `;
     }
 
-    // ===== المرحلة 5 =====
-    else if (s === 5) {
-        html += `
-            <div class="script-box">حدد شخصية العميل (حسب طريقة كلامه وتصرفاته)</div>
-            <div class="label">شخصية العميل</div>
-            <div class="btns-grid">
-                ${['D (مسيطر، سريع، يريد النتيجة)','I (اجتماعي، متحمس، يحب القصص)','S (ثابت، يريد الاستقرار)','C (دقيق، يحب التفاصيل)'].map(t => {
-                    const val = t.split(' ')[0];
-                    return `<button class="choice-btn ${state.personality===val?'selected':''}" onclick="state.personality='${val}';renderStage();saveState()">${t}</button>`;
-                }).join('')}
-            </div>
-            <div style="margin-top:8px;font-size:12px;color:#64748b;">نصيحة: D → اختصر، I → اذكر قصص نجاح، S → وعد بالدعم، C → أظهر التفاصيل والأرقام.</div>`;
-    }
+    // --- حفظ العميل ---
+    function saveClient() {
+        // جمع البيانات من الحقول
+        const data = {
+            name: document.getElementById('f_name').value.trim(),
+            phone: document.getElementById('f_phone').value.trim(),
+            sales: document.getElementById('f_sales').value.trim(),
+            position: document.getElementById('f_position').value.trim(),
+            bizname: document.getElementById('f_bizname').value.trim(),
+            owner: document.getElementById('f_owner').value.trim(),
+            industry: document.getElementById('f_industry').value,
+            employees: document.getElementById('f_emp').value ? parseInt(document.getElementById('f_emp').value) : '',
+            branches: document.getElementById('f_branches').value ? parseInt(document.getElementById('f_branches').value) : '',
+            city: document.getElementById('f_city').value.trim(),
+            currentSys: document.getElementById('f_currentsys').value,
+            problem: document.getElementById('f_problem').value.trim(),
+            painlevel: document.getElementById('f_painlevel').value,
+            objections: Array.from(document.getElementById('f_objections').selectedOptions).map(o => o.value),
+            personality: document.getElementById('f_personality').value,
+            contacted: document.getElementById('f_contacted').value,
+            appStatus: document.getElementById('f_appstatus').value,
+            source: document.getElementById('f_source').value,
+            lastContact: document.getElementById('f_lastcontact').value,
+            nextFollow: document.getElementById('f_nextfollow').value,
+            probability: document.getElementById('f_probability').value ? parseInt(document.getElementById('f_probability').value) : '',
+            amount: document.getElementById('f_amount').value ? parseInt(document.getElementById('f_amount').value) : '',
+            outcome: document.getElementById('f_outcome').value,
+            notes: document.getElementById('f_notes').value.trim()
+        };
 
-    // ===== المرحلة 6 =====
-    else if (s === 6) {
-        html += `
-            <div class="label">نتيجة المكالمة</div>
-            <div class="outcome-grid">
-                <button class="outcome-btn ${state.outcome==='demo'?'sel-demo':''}" onclick="state.outcome='demo';renderStage();saveState()"><i class="ti ti-device-desktop"></i><br>حجز ديمو</button>
-                <button class="outcome-btn ${state.outcome==='price'?'sel-demo':''}" onclick="state.outcome='price';renderStage();saveState()"><i class="ti ti-currency-dollar"></i><br>عرض سعر</button>
-                <button class="outcome-btn ${state.outcome==='whatsapp'?'sel-demo':''}" onclick="state.outcome='whatsapp';renderStage();saveState()"><i class="ti ti-brand-whatsapp"></i><br>واتساب</button>
-                <button class="outcome-btn ${state.outcome==='follow'?'sel-demo':''}" onclick="state.outcome='follow';renderStage();saveState()"><i class="ti ti-clock"></i><br>متابعة</button>
-                <button class="outcome-btn ${state.outcome==='unfit'?'sel-demo':''}" onclick="state.outcome='unfit';renderStage();saveState()"><i class="ti ti-x"></i><br>غير مؤهل</button>
-                <button class="outcome-btn ${state.outcome==='notinterested'?'sel-demo':''}" onclick="state.outcome='notinterested';renderStage();saveState()"><i class="ti ti-thumb-down"></i><br>غير مهتم</button>
-            </div>`;
-        if (state.outcome === 'follow') {
-            html += `
-                <div class="label">موعد المتابعة</div>
-                <div class="btns-grid">
-                    ${['بعد ساعة','اليوم مساءً','غداً صباحاً','بعد 3 أيام','موعد مخصص'].map(b =>
-                        `<button class="choice-btn ${state.followTime===b?'selected':''}" onclick="state.followTime='${b}';renderStage();saveState()">${b}</button>`
-                    ).join('')}
-                </div>`;
+        if (!data.name) { alert('اسم العميل مطلوب'); return; }
+        if (!data.phone) { alert('رقم الهاتف مطلوب'); return; }
+
+        if (editingId) {
+            const idx = clients.findIndex(c => c.id == editingId);
+            if (idx !== -1) {
+                clients[idx] = { ...clients[idx], ...data, id: editingId };
+            }
+        } else {
+            data.id = Date.now().toString();
+            clients.push(data);
         }
-        html += `
-            <div class="label">ملاحظة سريعة</div>
-            <textarea rows="2" placeholder="أي تفصيل مهم..." oninput="state.note=this.value;saveState()">${state.note}</textarea>
-            <button class="btn-next" style="margin-top:12px;width:100%;" onclick="finishCall()"><i class="ti ti-check"></i> حفظ وإنهاء المكالمة</button>`;
+        saveData();
+        switchTab('list');
     }
 
-    // ===== أزرار التنقل =====
-    if (s < 6) {
-        html += `<div class="nav-row">`;
-        if (s > 0) html += `<button class="btn-back" onclick="goBack()"><i class="ti ti-arrow-right"></i></button>`;
-        html += `<button class="btn-next" onclick="goNext()">التالي <i class="ti ti-arrow-left"></i></button>`;
-        html += `</div>`;
-    } else if (!state.outcome && s===6) {
-        html += `<div class="nav-row"><button class="btn-back" onclick="goBack()"><i class="ti ti-arrow-right"></i></button></div>`;
+    // --- تعديل ---
+    function editClient(id) {
+        const c = clients.find(c => c.id == id);
+        if (!c) return;
+        editingId = id;
+        document.getElementById('formTitle').textContent = '✏️ تعديل العميل';
+        document.getElementById('saveBtn').textContent = '💾 تحديث';
+        document.getElementById('deleteBtn').style.display = 'inline-block';
+
+        document.getElementById('f_name').value = c.name;
+        document.getElementById('f_phone').value = c.phone;
+        document.getElementById('f_sales').value = c.sales || '';
+        document.getElementById('f_position').value = c.position || '';
+        document.getElementById('f_bizname').value = c.bizname || '';
+        document.getElementById('f_owner').value = c.owner || '';
+        document.getElementById('f_industry').value = c.industry || '';
+        document.getElementById('f_emp').value = c.employees || '';
+        document.getElementById('f_branches').value = c.branches || '';
+        document.getElementById('f_city').value = c.city || '';
+        document.getElementById('f_currentsys').value = c.currentSys || '';
+        document.getElementById('f_problem').value = c.problem || '';
+        document.getElementById('f_painlevel').value = c.painlevel || '';
+        // تحديد الخيارات المختارة في القائمة المتعددة
+        const sel = document.getElementById('f_objections');
+        Array.from(sel.options).forEach(o => o.selected = (c.objections || []).includes(o.value));
+        document.getElementById('f_personality').value = c.personality || '';
+        document.getElementById('f_contacted').value = c.contacted || 'لا';
+        document.getElementById('f_appstatus').value = c.appStatus || '';
+        document.getElementById('f_source').value = c.source || '';
+        document.getElementById('f_lastcontact').value = c.lastContact || '';
+        document.getElementById('f_nextfollow').value = c.nextFollow || '';
+        document.getElementById('f_probability').value = c.probability || '';
+        document.getElementById('f_amount').value = c.amount || '';
+        document.getElementById('f_outcome').value = c.outcome || '';
+        document.getElementById('f_notes').value = c.notes || '';
+
+        switchTab('form');
     }
 
-    html += `</div>`;
-    c.innerHTML = html;
-}
-
-// ===== إنهاء المكالمة وحفظ العميل في قائمة =====
-function finishCall() {
-    clearInterval(timerInt);
-    // تخزين هذا العميل في قائمة العملاء (localStorage)
-    const client = {
-        id: Date.now(),
-        name: state.name,
-        phone: state.phone,
-        source: state.source,
-        biz: state.biz,
-        employees: state.employees,
-        branches: state.branches,
-        currentSys: state.currentSys,
-        decisionMaker: state.decisionMaker,
-        problem: state.problem,
-        painLevel: state.painLevel,
-        objections: state.objections,
-        personality: state.personality,
-        outcome: state.outcome,
-        note: state.note,
-        followTime: state.followTime,
-        timestamp: new Date().toISOString()
-    };
-
-    // استرجاع القائمة الحالية
-    let all = JSON.parse(localStorage.getItem('tawajud_clients') || '[]');
-    all.push(client);
-    localStorage.setItem('tawajud_clients', JSON.stringify(all));
-
-    // عرض رسالة النهاية
-    const c = document.getElementById('stage-content');
-    c.innerHTML = `
-        <div class="card">
-            <div class="finish-card">
-                <div style="font-size:28px;color:#16a34a;margin-bottom:6px;"><i class="ti ti-circle-check"></i></div>
-                <div style="font-weight:600;font-size:16px;">تم حفظ العميل</div>
-                <div style="font-size:13px;color:#64748b;">تم تخزين جميع التفاصيل في قاعدة البيانات.</div>
-                <button class="btn-next" style="margin-top:12px;width:100%;" onclick="resetApp()"><i class="ti ti-phone-plus"></i> مكالمة جديدة</button>
-                <button class="btn-back" style="margin-top:6px;width:100%;" onclick="viewAllClients()"><i class="ti ti-list"></i> عرض كل العملاء</button>
-            </div>
-        </div>`;
-    document.getElementById('stages-bar').innerHTML = STAGES.map(() => `<div class="dot done"></div>`).join('');
-    // إعادة تعيين stage إلى 0
-    state.stage = 0;
-    saveState();
-}
-
-function viewAllClients() {
-    const all = JSON.parse(localStorage.getItem('tawajud_clients') || '[]');
-    let list = '<div class="card"><h3>جميع العملاء</h3>';
-    if (all.length === 0) list += '<p style="color:#94a3b8;">لا يوجد عملاء.</p>';
-    all.forEach(c => {
-        list += `<div style="border-bottom:1px solid #e2e8f0;padding:6px 0;font-size:13px;">
-            <strong>${c.name}</strong> | ${c.phone} | ${c.biz || ''} | ${c.problem ? c.problem.substring(0,30)+'...' : ''}
-            <br><small style="color:#64748b;">النتيجة: ${c.outcome} | الشخصية: ${c.personality}</small>
-        </div>`;
-    });
-    list += `
-        <div style="margin-top:10px;">
-            <button class="btn-back" onclick="exportAllCSV()"><i class="ti ti-download"></i> تصدير CSV</button>
-            <button class="btn-back" onclick="resetApp()" style="margin-right:8px;">عودة</button>
-        </div>
-    </div>`;
-    document.getElementById('stage-content').innerHTML = list;
-}
-
-function exportAllCSV() {
-    const all = JSON.parse(localStorage.getItem('tawajud_clients') || '[]');
-    if (all.length === 0) { alert('لا يوجد عملاء'); return; }
-    const headers = ['الاسم','الهاتف','المصدر','النشاط','الموظفين','الفروع','النظام الحالي','صاحب القرار','المشكلة','قوة الألم','الاعتراضات','الشخصية','النتيجة','ملاحظة'];
-    let csv = headers.join(',') + '\n';
-    all.forEach(c => {
-        csv += [
-            c.name, c.phone, c.source, c.biz, c.employees, c.branches, c.currentSys,
-            c.decisionMaker, `"${(c.problem||'').replace(/"/g,'""')}"`, c.painLevel,
-            `"${(c.objections||[]).join('; ')}"`, c.personality, c.outcome,
-            `"${(c.note||'').replace(/"/g,'""')}"`
-        ].join(',') + '\n';
-    });
-    const blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8;'});
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = 'تواجد_عملاء.csv';
-    link.click();
-}
-
-function resetApp() {
-    if (timerInt) clearInterval(timerInt);
-    // إعادة تعيين الحالة (لكن نحتفظ باسم العميل الجديد في start view)
-    state = {
-        name: '', phone: '', source: '',
-        stage: 0,
-        biz: '', employees: null, branches: null, currentSys: '', decisionMaker: '',
-        problem: '', painLevel: '',
-        impactAsked: {},
-        objections: [], personality: '', outcome: '', note: '',
-        timerSec: 0, callStartTime: null,
-        openResp: '', followTime: '', diagAgree: ''
-    };
-    localStorage.removeItem(STORAGE_KEY); // مسح الحالة الحالية
-    document.getElementById('start-view').style.display = 'block';
-    document.getElementById('call-view').style.display = 'none';
-    document.getElementById('inp-name').value = '';
-    document.getElementById('inp-phone').value = '';
-    document.getElementById('inp-source').selectedIndex = 0;
-}
-
-// التهيئة عند التحميل
-window.addEventListener('DOMContentLoaded', () => {
-    if (loadState() && state.callStartTime && state.name) {
-        // استئناف مكالمة
-        document.getElementById('start-view').style.display = 'none';
-        document.getElementById('call-view').style.display = 'block';
-        document.getElementById('hdr-name').textContent = state.name;
-        document.getElementById('hdr-phone').textContent = state.phone;
-        buildBar();
-        renderStage();
-        startTimer();
+    // --- حذف ---
+    function deleteClient() {
+        if (!editingId) return;
+        if (confirm('هل أنت متأكد من حذف هذا العميل؟')) {
+            clients = clients.filter(c => c.id != editingId);
+            saveData();
+            editingId = null;
+            switchTab('list');
+        }
     }
-});
+    function deleteClientById(id) {
+        if (confirm('هل أنت متأكد من حذف هذا العميل؟')) {
+            clients = clients.filter(c => c.id != id);
+            saveData();
+            renderList();
+            updateStats();
+        }
+    }
+
+    // --- تصدير CSV ---
+    function exportCSV() {
+        if (clients.length === 0) { alert('لا يوجد عملاء للتصدير'); return; }
+        const headers = ['الاسم','الهاتف','مندوب','المنصب','النشاط','صاحب القرار','نوع النشاط','عدد الموظفين','الفروع','المدينة','النظام الحالي','المشكلة','قوة الألم','الاعتراضات','الشخصية','تم الاتصال','حالة التطبيق','المصدر','آخر اتصال','متابعة','نسبة%','المبلغ','النتيجة','ملاحظات'];
+        const rows = clients.map(c => [
+            c.name, c.phone, c.sales, c.position, c.bizname, c.owner, c.industry,
+            c.employees, c.branches, c.city, c.currentSys, c.problem, c.painlevel,
+            (c.objections || []).join('; '), c.personality, c.contacted, c.appStatus, c.source,
+            c.lastContact, c.nextFollow, c.probability, c.amount, c.outcome, c.notes
+        ]);
+        let csv = headers.join(',') + '\n';
+        rows.forEach(r => {
+            csv += r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',') + '\n';
+        });
+        const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'تواجد_CRM.csv';
+        link.click();
+    }
+
+    // --- مسح النموذج ---
+    function resetForm() {
+        editingId = null;
+        document.getElementById('formTitle').textContent = '➕ عميل جديد';
+        document.getElementById('saveBtn').textContent = '💾 حفظ العميل';
+        document.getElementById('deleteBtn').style.display = 'none';
+        document.querySelectorAll('#view-form input, #view-form select, #view-form textarea').forEach(el => {
+            if (el.tagName === 'SELECT') {
+                if (el.id === 'f_objections') {
+                    Array.from(el.options).forEach(o => o.selected = false);
+                } else {
+                    el.selectedIndex = 0;
+                }
+            } else {
+                el.value = '';
+            }
+        });
+        document.getElementById('f_contacted').value = 'لا';
+    }
+
+    // --- التهيئة ---
+    loadData();
+    renderList();
+    updateStats();
 </script>
 </body>
 </html>
